@@ -1,0 +1,10 @@
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+.env
+backend/.env
+.vercel
+*.log
+build/
+frontend/build/
+npm-debug.log*
