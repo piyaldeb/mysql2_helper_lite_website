@@ -1,0 +1,1013 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { ArrowRight, Book, Database, Shield, Sparkles, Star, Users, Zap, Gift, User, Linkedin, Mail } from 'lucide-react';
+import { allFunctions } from './functionsData';
+import DocumentationPage from './Documentation';
+import CreatorPage from './CreatorPage';
+
+const API_URL =
+  (typeof window !== 'undefined' && window.__MYSQL2_HELPER_API_URL__) ||
+  process.env.REACT_APP_API_URL ||
+  (typeof import.meta !== 'undefined' &&
+    import.meta.env &&
+    import.meta.env.VITE_API_URL) ||
+  'http://localhost:3001/api';
+
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap');
+
+  :root {
+    color-scheme: light;
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #8b5cf6;
+    --accent: #ec4899;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --code-bg: #1e1e2e;
+    --code-text: #cdd6f4;
+  }
+
+  .mh-root {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: #0f172a;
+    background: linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%);
+    line-height: 1.6;
+  }
+
+  .mh-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .mh-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    background: rgba(148, 163, 184, 0.15);
+    padding: 0.4rem 0.9rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+  }
+
+  .mh-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 4.5rem 0 5rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    color: #ffffff;
+  }
+
+  .mh-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .mh-hero h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .mh-hero p {
+    max-width: 640px;
+    color: rgba(226, 232, 240, 0.85);
+    margin-bottom: 2rem;
+  }
+
+  .mh-highlight-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .mh-highlight-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .mh-highlight {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 0.9rem;
+    padding: 0.9rem 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .mh-highlight svg {
+    flex-shrink: 0;
+    color: #38bdf8;
+  }
+
+  .mh-cta-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .mh-btn-primary,
+  .mh-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.75rem 1.3rem;
+    font-weight: 600;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+
+  .mh-btn-primary {
+    background: #f8fafc;
+    color: #0f172a;
+    box-shadow: 0 18px 35px rgba(15, 23, 42, 0.25);
+  }
+
+  .mh-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 22px 45px rgba(15, 23, 42, 0.28);
+  }
+
+  .mh-btn-secondary {
+    border: 1px solid rgba(248, 250, 252, 0.4);
+    color: #f8fafc;
+  }
+
+  .mh-btn-secondary:hover {
+    background: rgba(248, 250, 252, 0.15);
+  }
+
+  .mh-content {
+    padding: 4.5rem 0;
+  }
+
+  .mh-section {
+    margin-bottom: 5rem;
+  }
+
+  .mh-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #2563eb;
+    margin-bottom: 0.75rem;
+  }
+
+  .mh-section-title {
+    text-align: center;
+    margin-bottom: 2.75rem;
+  }
+
+  .mh-section-title h2 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin-bottom: 0.75rem;
+    color: #0f172a;
+  }
+
+  .mh-section-title p {
+    color: #475569;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .mh-grid {
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .mh-grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .mh-grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .mh-card {
+    background: #ffffff;
+    border-radius: 1.1rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+    padding: 1.9rem;
+  }
+
+  .mh-card h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #0f172a;
+  }
+
+  .mh-card pre {
+    margin-top: 1.25rem;
+    border-radius: 0.9rem;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.1rem;
+    font-size: 0.88rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+
+  .mh-feature-header {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .mh-feature-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  .mh-feature-meta {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08rem;
+    color: #1d4ed8;
+  }
+
+  .mh-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .mh-tab {
+    border-radius: 9999px;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    background: #ffffff;
+    padding: 0.55rem 1.3rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .mh-tab-active {
+    background: #0f172a;
+    color: #f8fafc;
+    border-color: #0f172a;
+  }
+
+  .mh-stats {
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.08), rgba(6, 182, 212, 0.08));
+    border-radius: 1.5rem;
+    padding: 2rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .mh-stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .mh-stat-card {
+    background: rgba(248, 250, 252, 0.75);
+    border-radius: 1.05rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+  }
+
+  .mh-stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.9rem;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(14, 165, 233, 0.18));
+    display: grid;
+    place-items: center;
+    color: #1d4ed8;
+  }
+
+  .mh-footer {
+    background: #ffffff;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    padding: 2.5rem 0;
+  }
+
+  .mh-footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+
+  @media (min-width: 640px) {
+    .mh-footer-inner {
+      flex-direction: row;
+    }
+  }
+
+  .mh-footer-links {
+    display: flex;
+    gap: 1.2rem;
+  }
+
+  .mh-footer-links a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .mh-footer-links a:hover {
+    color: #0f172a;
+  }
+
+  .mh-alert {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #b45309;
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    border-radius: 0.75rem;
+    padding: 0.9rem 1rem;
+  }
+
+  /* Version Update Section */
+  .version-banner {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+  }
+
+  .version-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+    border: 2px solid var(--primary);
+    border-radius: 1.25rem;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .version-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .version-badge {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  }
+
+  .version-features {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .version-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 0.75rem;
+    border-left: 3px solid var(--success);
+  }
+
+  /* Creator Section */
+  .creator-glimpse {
+    background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+    color: white;
+    padding: 3rem 0;
+    border-top: 3px solid var(--primary);
+  }
+
+  .creator-card {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border-radius: 1.25rem;
+    padding: 2rem;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .creator-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: grid;
+    place-items: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+  }
+
+  .creator-info h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.75rem;
+    color: white;
+  }
+
+  .creator-role {
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .creator-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .creator-link-btn {
+    padding: 0.6rem 1.25rem;
+    border-radius: 9999px;
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .creator-link-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .creator-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .version-card {
+      padding: 1.5rem;
+    }
+  }
+`;
+
+const heroHighlights = [
+  { icon: <Zap size={18} />, label: 'High velocity SQL helpers' },
+  { icon: <Sparkles size={18} />, label: 'Typed, production ready patterns' },
+  { icon: <Shield size={18} />, label: 'Safe defaults and guardrails' },
+];
+
+const fallbackData = {
+  features: allFunctions,
+  examples: [
+    {
+      id: '1',
+      title: 'E-Commerce Order Processing',
+      description: 'Create orders, add line items, and adjust inventory in a single transaction.',
+      category: 'E-Commerce',
+      code: `const orderId = await db.transaction(async () => {
+  const order = await db.insertAndReturn('orders', {
+    user_id: userId,
+    total: 299.99,
+    status: 'pending'
+  });
+
+  await db.bulkInsert('order_items', items);
+  await db.decrement('products', item.id, 'stock', item.quantity);
+  return order.id;
+});`,
+      order: 1,
+    },
+    {
+      id: '2',
+      title: 'User Analytics Dashboard',
+      description: 'Generate comprehensive user statistics for an admin dashboard.',
+      category: 'Analytics',
+      code: `const stats = {
+  total: await db.count('users'),
+  activeToday: await db.createdToday('users'),
+  activeThisWeek: await db.createdThisWeek('users'),
+  avgAge: await db.avg('users', 'age'),
+  statusBreakdown: await db.countBy('users', 'status')
+};`,
+      order: 2,
+    },
+    {
+      id: '3',
+      title: 'Advanced Product Search',
+      description: 'Search products with multiple filters and full-text search.',
+      category: 'Search',
+      code: `const products = await db.advancedSearch('products', {
+  price: { operator: 'BETWEEN', value: { min: 50, max: 500 } },
+  category: { operator: 'IN', value: ['Electronics', 'Computers'] },
+  stock: { operator: '>', value: 0 }
+}, {
+  orderBy: [{ column: 'price', direction: 'ASC' }],
+  limit: 20
+});`,
+      order: 3,
+    },
+  ],
+};
+
+function SectionTitle({ eyebrow, title, description }) {
+  return (
+    <div className="mh-section-title">
+      {eyebrow ? <p className="mh-eyebrow">{eyebrow}</p> : null}
+      <h2>{title}</h2>
+      {description ? <p>{description}</p> : null}
+    </div>
+  );
+}
+
+function FeatureCard({ feature }) {
+  return (
+    <article className="mh-card">
+      <div className="mh-feature-header">
+        <span className="mh-feature-icon">{feature.icon?.slice(0, 2).toUpperCase()}</span>
+        <div>
+          <div className="mh-feature-meta">{feature.category}</div>
+          <h3>{feature.title}</h3>
+        </div>
+      </div>
+      <p>{feature.description}</p>
+      <pre>
+        <code>{feature.code}</code>
+      </pre>
+    </article>
+  );
+}
+
+function ExampleCard({ example }) {
+  return (
+    <article className="mh-card">
+      <div className="mh-feature-meta">{example.category}</div>
+      <h3>{example.title}</h3>
+      <p>{example.description}</p>
+      <pre>
+        <code>{example.code}</code>
+      </pre>
+    </article>
+  );
+}
+
+function StatsBar({ stats }) {
+  const fallback = {
+    totalDownloads: 1500,
+    githubStars: 250,
+    activeUsers: 1000,
+  };
+
+  const values = stats ?? fallback;
+
+  const items = [
+    {
+      icon: <Database size={20} />,
+      label: 'Downloads',
+      value: values.totalDownloads.toLocaleString(),
+    },
+    {
+      icon: <Star size={20} />,
+      label: 'GitHub stars',
+      value: values.githubStars.toLocaleString(),
+    },
+    {
+      icon: <Users size={20} />,
+      label: 'Active teams',
+      value: values.activeUsers.toLocaleString(),
+    },
+  ];
+
+  return (
+    <div className="mh-stats">
+      {items.map((item) => (
+        <div key={item.label} className="mh-stat-card">
+          <span className="mh-stat-icon">{item.icon}</span>
+          <div>
+            <p style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700 }}>{item.value}</p>
+            <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem' }}>{item.label}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function IntegrationSteps() {
+  const steps = [
+    {
+      title: 'Install',
+      description: 'Add the helper to your project and create a connection pool.',
+      code: `npm install mysql2-helper-lite`,
+    },
+    {
+      title: 'Configure',
+      description: 'Set up your database credentials and default helper options.',
+      code: `import { createHelper } from 'mysql2-helper-lite';
+
+const db = createHelper({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});`,
+    },
+    {
+      title: 'Ship',
+      description: 'Replace repetitive SQL with expressive helper calls.',
+      code: `const users = await db.cachedQuery(
+  'SELECT * FROM users WHERE status = ?',
+  ['active'],
+  { ttlSeconds: 60 }
+);`,
+    },
+  ];
+
+  return (
+    <div className="mh-grid mh-grid-3">
+      {steps.map((step, index) => (
+        <div key={step.title} className="mh-card">
+          <div className="mh-feature-meta">Step {index + 1}</div>
+          <h3>{step.title}</h3>
+          <p>{step.description}</p>
+          <pre>
+            <code>{step.code}</code>
+          </pre>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FAQ() {
+  const items = [
+    {
+      question: 'Does it work with serverless deployments?',
+      answer:
+        'Yes. The helpers wrap mysql2 and are compatible with serverless functions as long as you manage connection reuse.',
+    },
+    {
+      question: 'How are admin routes secured?',
+      answer:
+        'Mutating endpoints expect an Authorization header that matches your ADMIN_SECRET environment variable.',
+    },
+    {
+      question: 'Can I extend the helpers?',
+      answer:
+        'Absolutely. The helper exposes hooks so you can register your own transformers or wrap existing ones.',
+    },
+  ];
+
+  return (
+    <div className="mh-grid">
+      {items.map((item) => (
+        <details key={item.question} className="mh-card">
+          <summary style={{ cursor: 'pointer', fontWeight: 700 }}>{item.question}</summary>
+          <p style={{ marginTop: '1rem' }}>{item.answer}</p>
+        </details>
+      ))}
+    </div>
+  );
+}
+
+function VersionUpdate() {
+  return (
+    <div className="version-card">
+      <div className="version-header">
+        <Gift size={32} color="#6366f1" />
+        <div>
+          <h2 style={{ margin: 0, fontSize: '1.75rem' }}>
+            <span className="version-badge">v6.0.0</span> Latest Release
+          </h2>
+          <p style={{ margin: '0.5rem 0 0 0', color: '#64748b' }}>
+            Released November 11, 2025 • Revolutionary Features Beyond mysql2!
+          </p>
+        </div>
+      </div>
+      <p style={{ fontSize: '1.05rem', lineHeight: '1.7', color: '#475569' }}>
+        This major release introduces <strong>16 creative functions</strong> that go far beyond standard mysql2,
+        including smart comparison, time travel queries, fuzzy search, weighted random selection, and much more!
+      </p>
+      <div className="version-features">
+        <div className="version-feature-item">
+          <Sparkles size={20} color="#10b981" style={{ flexShrink: 0 }} />
+          <div>
+            <strong>diff()</strong> - Smart comparison showing only changed fields between records
+          </div>
+        </div>
+        <div className="version-feature-item">
+          <Sparkles size={20} color="#10b981" style={{ flexShrink: 0 }} />
+          <div>
+            <strong>timeTravel()</strong> - Query records as they existed at specific timestamps
+          </div>
+        </div>
+        <div className="version-feature-item">
+          <Sparkles size={20} color="#10b981" style={{ flexShrink: 0 }} />
+          <div>
+            <strong>fuzzySearch()</strong> - Approximate matching with typo tolerance
+          </div>
+        </div>
+        <div className="version-feature-item">
+          <Sparkles size={20} color="#10b981" style={{ flexShrink: 0 }} />
+          <div>
+            <strong>13+ more creative functions</strong> including pivotTable, rank, movingAverage, and cascadeUpdate
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CreatorGlimpse({ onViewFull }) {
+  return (
+    <section className="creator-glimpse">
+      <div className="mh-container">
+        <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2.25rem' }}>
+          Meet the Creator
+        </h2>
+        <div className="creator-card">
+          <div className="creator-avatar">RD</div>
+          <div className="creator-info">
+            <h3>Ranak Debnath</h3>
+            <p className="creator-role">Senior Backend Developer | Data Analyst | Automation Specialist</p>
+            <p style={{ color: '#cbd5e1', lineHeight: '1.7' }}>
+              Passionate backend developer with expertise in Node.js, Express, SQL, and MongoDB.
+              Currently working at Cleverlyy and Tex Fasteners, specializing in scalable backend systems,
+              data analysis, and automation solutions.
+            </p>
+            <div className="creator-links">
+              <a href="https://www.linkedin.com/in/ranakdebnath-7644621b7" target="_blank" rel="noopener noreferrer" className="creator-link-btn">
+                <Linkedin size={18} /> LinkedIn
+              </a>
+              <a href="mailto:piyaldeb87@gmail.com" className="creator-link-btn">
+                <Mail size={18} /> Contact
+              </a>
+              <button onClick={onViewFull} className="creator-link-btn" style={{ background: 'var(--accent)', border: 'none', cursor: 'pointer' }}>
+                <User size={18} /> View Full Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function Mysql2HelperWebsite() {
+  const [features, setFeatures] = useState(fallbackData.features);
+  const [examples, setExamples] = useState(fallbackData.examples);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [currentView, setCurrentView] = useState('home'); // 'home' or 'docs'
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [featureRes, exampleRes, statsRes] = await Promise.all([
+          fetch(`${API_URL}/features?active=true`),
+          fetch(`${API_URL}/examples?active=true`),
+          fetch(`${API_URL}/stats`),
+        ]);
+
+        if (!featureRes.ok || !exampleRes.ok || !statsRes.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const [featureData, exampleData, statsData] = await Promise.all([
+          featureRes.json(),
+          exampleRes.json(),
+          statsRes.json(),
+        ]);
+
+        // Only use API data if it has MORE functions than our fallback
+        // This ensures we always show the complete function list
+        if (featureData && featureData.length > fallbackData.features.length) {
+          setFeatures(featureData);
+        }
+        if (exampleData && exampleData.length > 0) {
+          setExamples(exampleData);
+        }
+        setStats(statsData);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to load data from API, using fallback data', err);
+        setError('Using built-in function data. API is offline.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const categories = useMemo(() => {
+    const unique = new Set(features.map((item) => item.category));
+    return ['All', ...Array.from(unique).sort()];
+  }, [features]);
+
+  const filteredFeatures = useMemo(() => {
+    if (categoryFilter === 'All') {
+      return features;
+    }
+    return features.filter((item) => item.category === categoryFilter);
+  }, [features, categoryFilter]);
+
+  const functionCount = features.length;
+
+  if (currentView === 'docs') {
+    return <DocumentationPage onBack={() => setCurrentView('home')} features={features} />;
+  }
+
+  if (currentView === 'creator') {
+    return <CreatorPage onBack={() => setCurrentView('home')} />;
+  }
+
+  return (
+    <div className="mh-root">
+      <style>{styles}</style>
+
+      <header className="mh-hero">
+        <div className="mh-container">
+          <span className="mh-pill">
+            <Sparkles size={16} /> MySQL2 Helper Lite - {functionCount}+ Functions
+          </span>
+          <h1>Ship production-ready SQL helpers in minutes.</h1>
+          <p>
+            A comprehensive set of {functionCount}+ MySQL utilities built on top of mysql2. Skip repetitive boilerplate,
+            ship features faster, and keep your data flows auditable.
+          </p>
+
+          <div className="mh-highlight-grid">
+            {heroHighlights.map((item) => (
+              <div key={item.label} className="mh-highlight">
+                {item.icon}
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mh-cta-group">
+            <a href="#features" className="mh-btn-primary">
+              Explore {functionCount}+ features <ArrowRight size={18} />
+            </a>
+            <button
+              onClick={() => setCurrentView('docs')}
+              className="mh-btn-secondary"
+              style={{ cursor: 'pointer', border: 'none' }}
+            >
+              <Book size={18} /> Full Documentation
+            </button>
+            <a
+              href="https://github.com/piyaldeb/mysql2-helper-lite"
+              className="mh-btn-secondary"
+            >
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <main className="mh-content">
+        <div className="mh-container">
+          <section id="version" className="mh-section">
+            <VersionUpdate />
+          </section>
+
+          <section id="stats" className="mh-section">
+            <SectionTitle
+              eyebrow="Snapshot"
+              title="Trusted by data-focused teams"
+              description="Track adoption and fast-moving metrics right from the API. Seed data is included for quick demos."
+            />
+            <StatsBar stats={stats} />
+          </section>
+
+          <section id="features" className="mh-section">
+            <SectionTitle
+              eyebrow="All Functions"
+              title={`${functionCount}+ Purpose-built helpers for everyday workloads`}
+              description="Browse all available functions organized by category. Each function is production-ready and optimized for performance."
+            />
+            <div className="mh-tabs">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  className={`mh-tab ${categoryFilter === category ? 'mh-tab-active' : ''}`}
+                  onClick={() => setCategoryFilter(category)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+            <p style={{ textAlign: 'center', color: '#475569', marginBottom: '2rem' }}>
+              Showing {filteredFeatures.length} of {functionCount} functions
+            </p>
+            {loading ? (
+              <p style={{ textAlign: 'center', color: '#64748b' }}>Loading features…</p>
+            ) : (
+              <div className="mh-grid mh-grid-2">
+                {filteredFeatures.map((feature) => (
+                  <FeatureCard key={feature._id || feature.id} feature={feature} />
+                ))}
+              </div>
+            )}
+            {error ? <div className="mh-alert">{error}</div> : null}
+          </section>
+
+          <section id="examples" className="mh-section">
+            <SectionTitle
+              eyebrow="Code samples"
+              title="Drop-in patterns for real-world apps"
+              description="Use the examples as a starting point for transactions, analytics, and background jobs."
+            />
+            {loading ? (
+              <p style={{ textAlign: 'center', color: '#64748b' }}>Loading examples…</p>
+            ) : (
+              <div className="mh-grid mh-grid-2">
+                {examples.map((example) => (
+                  <ExampleCard key={example._id || example.id} example={example} />
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section id="integration" className="mh-section">
+            <SectionTitle
+              eyebrow="Integration"
+              title="Three steps to production readiness"
+              description="Install the helper, configure the connection, and ship your first feature."
+            />
+            <IntegrationSteps />
+          </section>
+
+          <section id="faq" className="mh-section">
+            <SectionTitle
+              eyebrow="FAQ"
+              title="Answers to common questions"
+              description="Need more help? Open a GitHub issue or reach out to the maintainers."
+            />
+            <FAQ />
+          </section>
+        </div>
+      </main>
+
+      <CreatorGlimpse onViewFull={() => setCurrentView('creator')} />
+
+      <footer className="mh-footer">
+        <div className="mh-container">
+          <div className="mh-footer-inner">
+            <span>MIT Licensed. Made for the developer community.</span>
+            <div className="mh-footer-links">
+              <a href="https://github.com/piyaldeb">GitHub</a>
+              <a href="piyaldeb87@example.com">Email</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
