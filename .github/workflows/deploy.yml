@@ -45,35 +45,27 @@ jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
     needs: deploy-backend
-    
+
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '20'
-    
-    - name: Create React App
-      run: |
-        npx create-react-app frontend
-        
-    - name: Copy component
-      run: |
-        cp mysql2-helper-website.jsx frontend/src/App.js
-        
+
     - name: Install dependencies
       run: |
         cd frontend
-        npm install lucide-react
-        
+        npm ci
+
     - name: Build
       run: |
         cd frontend
         npm run build
-    
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
