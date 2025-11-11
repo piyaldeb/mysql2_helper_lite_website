@@ -13,7 +13,7 @@
     }
   ],
   "env": {
-    "MONGODB_URI": "@mongodb-uri",
-    "ADMIN_SECRET": "@admin-secret"
+    "MONGODB_URI": "mongodb+srv://piyaldeb87:232637@mysql2helperlite.uk26yjo.mongodb.net/?appName=Mysql2HelperLite",
+    "ADMIN_SECRET": "change-me"
   }
 }
