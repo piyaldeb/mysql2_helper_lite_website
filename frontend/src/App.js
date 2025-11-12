@@ -325,6 +325,61 @@ const styles = `
     overflow-x: auto;
     font-family: 'JetBrains Mono', 'Consolas', monospace;
     border: 1px solid rgba(99, 102, 241, 0.2);
+    position: relative;
+    user-select: text;
+    cursor: text;
+  }
+
+  .mh-card pre code {
+    display: block;
+    white-space: pre;
+    word-wrap: normal;
+    user-select: text;
+  }
+
+  .mh-card pre::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .mh-card pre::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 4px;
+  }
+
+  .mh-card pre::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.4);
+    border-radius: 4px;
+  }
+
+  .mh-card pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.6);
+  }
+
+  .code-copy-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(99, 102, 241, 0.9);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .code-copy-btn:hover {
+    background: rgba(99, 102, 241, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  .code-copy-btn:active {
+    transform: translateY(0);
   }
 
   .mh-feature-header {
@@ -664,6 +719,14 @@ function SectionTitle({ eyebrow, title, description }) {
 }
 
 function FeatureCard({ feature }) {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(feature.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <article className="mh-card">
       <div className="mh-feature-header">
@@ -674,22 +737,48 @@ function FeatureCard({ feature }) {
         </div>
       </div>
       <p>{feature.description}</p>
-      <pre>
-        <code>{feature.code}</code>
-      </pre>
+      <div style={{ position: 'relative' }}>
+        <button
+          onClick={handleCopy}
+          className="code-copy-btn"
+          title="Copy code"
+        >
+          {copied ? '✓ Copied!' : 'Copy'}
+        </button>
+        <pre>
+          <code>{feature.code}</code>
+        </pre>
+      </div>
     </article>
   );
 }
 
 function ExampleCard({ example }) {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(example.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <article className="mh-card">
       <div className="mh-feature-meta">{example.category}</div>
       <h3>{example.title}</h3>
       <p>{example.description}</p>
-      <pre>
-        <code>{example.code}</code>
-      </pre>
+      <div style={{ position: 'relative' }}>
+        <button
+          onClick={handleCopy}
+          className="code-copy-btn"
+          title="Copy code"
+        >
+          {copied ? '✓ Copied!' : 'Copy'}
+        </button>
+        <pre>
+          <code>{example.code}</code>
+        </pre>
+      </div>
     </article>
   );
 }
