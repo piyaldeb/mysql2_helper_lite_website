@@ -1509,11 +1509,28 @@ export default function Mysql2HelperWebsite() {
   const [categoryFilter, setCategoryFilter] = useState('Core');
   const [currentView, setCurrentView] = useState(() => {
     // Check if we're on the admin route
-    if (typeof window !== 'undefined' && window.location.pathname === '/admin') {
-      return 'admin';
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      const hash = window.location.hash;
+      // Handle both /admin paths and #admin hash
+      if (pathname === '/admin' || pathname.endsWith('/admin') || hash === '#admin') {
+        return 'admin';
+      }
     }
     return 'home';
   }); // 'home', 'docs', 'creator', or 'admin'
+
+  // Listen for hash changes to support #admin navigation
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#admin') {
+        setCurrentView('admin');
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
   const [adminSecret, setAdminSecret] = useState('');
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [pageLoadTime] = useState(() => Date.now());
@@ -1646,18 +1663,20 @@ export default function Mysql2HelperWebsite() {
     if (!adminSecret) {
       const secret = prompt('Enter admin password:');
       // Password is stored in environment variable for security
-      const adminPassword = process.env.REACT_APP_ADMIN_PASSWORD || 
+      // Fallback to 'admin123' for development if no env variable is set
+      const adminPassword = process.env.REACT_APP_ADMIN_PASSWORD ||
                            (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ADMIN_PASSWORD) ||
-                           '';
-      
-      if (secret === adminPassword && adminPassword) {
+                           'admin123'; // Default password for development
+
+      if (secret === adminPassword) {
         setAdminSecret(adminPassword);
       } else if (secret) {
-        alert('Invalid password');
-        window.location.href = '/';
+        alert('Invalid password. Hint: Try "admin123" for development.');
+        setCurrentView('home');
         return null;
       } else {
-        window.location.href = '/';
+        // User cancelled the prompt
+        setCurrentView('home');
         return null;
       }
     }
@@ -1667,7 +1686,6 @@ export default function Mysql2HelperWebsite() {
         onBack={() => {
           setCurrentView('home');
           setAdminSecret('');
-          window.location.href = '/';
         }}
         adminSecret={adminSecret}
       />
@@ -1832,7 +1850,23 @@ export default function Mysql2HelperWebsite() {
             <span>MIT Licensed. Made for the developer community.</span>
             <div className="mh-footer-links">
               <a href="https://github.com/piyaldeb">GitHub</a>
-              <a href="piyaldeb87@example.com">Email</a>
+              <a href="mailto:piyaldeb87@gmail.com">Email</a>
+              <a
+                href="#admin"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.hash = 'admin';
+                  setCurrentView('admin');
+                }}
+                style={{
+                  color: '#6366f1',
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  textDecoration: 'underline'
+                }}
+              >
+                Admin
+              </a>
             </div>
           </div>
         </div>
