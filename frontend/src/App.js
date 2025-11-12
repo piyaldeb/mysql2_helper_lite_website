@@ -72,14 +72,40 @@ const styles = `
     }
   }
 
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow:
+        0 0 20px rgba(139, 92, 246, 0.3),
+        0 0 40px rgba(139, 92, 246, 0.2),
+        0 0 60px rgba(139, 92, 246, 0.1);
+    }
+    50% {
+      box-shadow:
+        0 0 30px rgba(139, 92, 246, 0.4),
+        0 0 60px rgba(139, 92, 246, 0.3),
+        0 0 90px rgba(139, 92, 246, 0.2);
+    }
+  }
+
   .mh-root {
     font-family: 'Inter', 'Segoe UI', sans-serif;
-    color: #0f172a;
+    color: #1e1b4b;
     background:
-      radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 60%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 40% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
-      linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%);
+      radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 80% 60%, rgba(168, 85, 247, 0.10) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(217, 70, 239, 0.08) 0%, transparent 50%),
+      linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #fae8ff 100%);
     line-height: 1.6;
     animation: fadeInUp 0.6s ease-out;
     position: relative;
@@ -94,8 +120,9 @@ const styles = `
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.03) 0%, transparent 40%),
-      radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.03) 0%, transparent 40%);
+      radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 70% 70%, rgba(217, 70, 239, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.03) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
@@ -224,10 +251,10 @@ const styles = `
     gap: 0.5rem;
     border-radius: 9999px;
     padding: 0.75rem 1.3rem;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .mh-btn-primary {
@@ -385,6 +412,7 @@ const styles = `
       inset 0 1px 0 rgba(255, 255, 255, 1);
     border-color: rgba(99, 102, 241, 0.3);
     background: rgba(255, 255, 255, 0.85);
+    animation: glow 2s ease-in-out infinite;
   }
 
   .mh-card:hover::before {
@@ -393,6 +421,21 @@ const styles = `
 
   .mh-card:hover::after {
     opacity: 0.5;
+  }
+
+  .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(139, 92, 246, 0.4) 0%,
+      rgba(168, 85, 247, 0.3) 30%,
+      rgba(217, 70, 239, 0.2) 60%,
+      transparent 100%
+    );
+    pointer-events: none;
+    animation: ripple 0.8s cubic-bezier(0, 0, 0.2, 1);
+    z-index: 1;
   }
 
   .mh-card h3 {
@@ -512,12 +555,27 @@ const styles = `
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mh-tab:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(139, 92, 246, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
   }
 
   .mh-tab-active {
-    background: #0f172a;
-    color: #f8fafc;
-    border-color: #0f172a;
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    color: #ffffff;
+    border-color: #8b5cf6;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  }
+
+  .mh-tab-active:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
   }
 
   .mh-stats {
@@ -855,6 +913,29 @@ function SectionTitle({ eyebrow, title, description }) {
 
 function FeatureCard({ feature }) {
   const [copied, setCopied] = React.useState(false);
+  const cardRef = React.useRef(null);
+
+  const createRipple = (event) => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const ripple = document.createElement('span');
+    const rect = card.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    ripple.classList.add('ripple-effect');
+
+    card.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+    }, 1000);
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(feature.code);
@@ -863,7 +944,11 @@ function FeatureCard({ feature }) {
   };
 
   return (
-    <article className="mh-card">
+    <article
+      ref={cardRef}
+      className="mh-card"
+      onClick={createRipple}
+    >
       <div className="mh-feature-header">
         <span className="mh-feature-icon">{feature.icon?.slice(0, 2).toUpperCase()}</span>
         <div>
@@ -890,6 +975,29 @@ function FeatureCard({ feature }) {
 
 function ExampleCard({ example }) {
   const [copied, setCopied] = React.useState(false);
+  const cardRef = React.useRef(null);
+
+  const createRipple = (event) => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const ripple = document.createElement('span');
+    const rect = card.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    ripple.classList.add('ripple-effect');
+
+    card.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+    }, 1000);
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(example.code);
@@ -898,7 +1006,11 @@ function ExampleCard({ example }) {
   };
 
   return (
-    <article className="mh-card">
+    <article
+      ref={cardRef}
+      className="mh-card"
+      onClick={createRipple}
+    >
       <div className="mh-feature-meta">{example.category}</div>
       <h3>{example.title}</h3>
       <p>{example.description}</p>
@@ -1007,30 +1119,96 @@ const db = createHelper({
 }
 
 function FAQ() {
+  const cardRef = React.useRef({});
+
+  const createRipple = (event, index) => {
+    const card = cardRef.current[index];
+    if (!card) return;
+
+    const ripple = document.createElement('span');
+    const rect = card.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    ripple.classList.add('ripple-effect');
+
+    card.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+    }, 1000);
+  };
+
   const items = [
+    {
+      question: 'What is MySQL2 Helper Lite?',
+      answer:
+        'MySQL2 Helper Lite is a comprehensive TypeScript library built on top of mysql2, providing 100+ ready-to-use functions for database operations. It eliminates boilerplate code and makes database interactions simple and intuitive.',
+    },
     {
       question: 'Does it work with serverless deployments?',
       answer:
-        'Yes. The helpers wrap mysql2 and are compatible with serverless functions as long as you manage connection reuse.',
+        'Yes! The helpers wrap mysql2 and are fully compatible with serverless functions (AWS Lambda, Vercel, Netlify) as long as you manage connection pooling properly. We recommend using connection reuse for optimal performance.',
+    },
+    {
+      question: 'Is it production-ready?',
+      answer:
+        'Absolutely. MySQL2 Helper Lite is battle-tested in production environments, handles edge cases gracefully, includes comprehensive error handling, and provides TypeScript support for type safety.',
+    },
+    {
+      question: 'How does it compare to ORMs like Prisma or TypeORM?',
+      answer:
+        'Unlike full ORMs, MySQL2 Helper Lite is lightweight and gives you direct SQL control while removing boilerplate. Perfect for developers who want SQL power with helper convenience, without the overhead of a full ORM.',
+    },
+    {
+      question: 'Can I use it with existing mysql2 code?',
+      answer:
+        'Yes! MySQL2 Helper Lite is a wrapper around mysql2, so you can gradually adopt it in existing projects. Use helpers for new code while keeping your existing mysql2 queries working side by side.',
+    },
+    {
+      question: 'What about transactions and connection pooling?',
+      answer:
+        'Built-in support for transactions with automatic rollback on errors. Connection pooling is inherited from mysql2, and the helper provides convenient transaction() and withConnection() methods.',
+    },
+    {
+      question: 'Is there TypeScript support?',
+      answer:
+        'Yes! Full TypeScript definitions are included. Get autocomplete, type checking, and IntelliSense for all 100+ functions right in your IDE.',
     },
     {
       question: 'How are admin routes secured?',
       answer:
-        'Mutating endpoints expect an Authorization header that matches your ADMIN_SECRET environment variable.',
+        'Mutating endpoints expect an Authorization header that matches your ADMIN_SECRET environment variable. This ensures only authorized applications can modify data.',
     },
     {
       question: 'Can I extend the helpers?',
       answer:
-        'Absolutely. The helper exposes hooks so you can register your own transformers or wrap existing ones.',
+        'Absolutely. The helper exposes hooks and plugins so you can register your own transformers, add custom middleware, or wrap existing functions with your business logic.',
+    },
+    {
+      question: 'What are the creative functions in v6.0.0?',
+      answer:
+        'V6.0.0 introduces 16 innovative functions including fuzzySearch() for typo-tolerant search, timeTravel() for historical queries, diff() for comparing records, pivotTable() for data transformation, and many more!',
     },
   ];
 
   return (
     <div className="mh-grid">
-      {items.map((item) => (
-        <details key={item.question} className="mh-card">
-          <summary style={{ cursor: 'pointer', fontWeight: 700 }}>{item.question}</summary>
-          <p style={{ marginTop: '1rem' }}>{item.answer}</p>
+      {items.map((item, index) => (
+        <details
+          key={item.question}
+          ref={(el) => (cardRef.current[index] = el)}
+          className="mh-card faq-item"
+          onClick={(e) => createRipple(e, index)}
+        >
+          <summary style={{ cursor: 'pointer', fontWeight: 700, position: 'relative', zIndex: 2 }}>
+            {item.question}
+          </summary>
+          <p style={{ marginTop: '1rem', position: 'relative', zIndex: 2 }}>{item.answer}</p>
         </details>
       ))}
     </div>
@@ -1129,6 +1307,27 @@ export default function Mysql2HelperWebsite() {
   const [categoryFilter, setCategoryFilter] = useState('Core');
   const [currentView, setCurrentView] = useState('home'); // 'home' or 'docs'
 
+  // Reusable ripple effect function
+  const createRipple = (event) => {
+    const button = event.currentTarget;
+    const ripple = document.createElement('span');
+    const rect = button.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    ripple.classList.add('ripple-effect');
+
+    button.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+    }, 1000);
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -1217,14 +1416,17 @@ export default function Mysql2HelperWebsite() {
           </div>
 
           <div className="mh-cta-group">
-            <a href="#playground" className="mh-btn-primary">
+            <a href="#playground" className="mh-btn-primary" onClick={createRipple}>
               <Code2 size={18} /> Try Playground
             </a>
-            <a href="#features" className="mh-btn-secondary">
+            <a href="#features" className="mh-btn-secondary" onClick={createRipple}>
               Explore {functionCount}+ features <ArrowRight size={18} />
             </a>
             <button
-              onClick={() => setCurrentView('docs')}
+              onClick={(e) => {
+                createRipple(e);
+                setCurrentView('docs');
+              }}
               className="mh-btn-secondary"
               style={{ cursor: 'pointer', border: 'none' }}
             >
@@ -1233,6 +1435,7 @@ export default function Mysql2HelperWebsite() {
             <a
               href="https://github.com/piyaldeb/mysql2-helper-lite"
               className="mh-btn-secondary"
+              onClick={createRipple}
             >
               View on GitHub
             </a>
@@ -1267,7 +1470,10 @@ export default function Mysql2HelperWebsite() {
                   key={category}
                   type="button"
                   className={`mh-tab ${categoryFilter === category ? 'mh-tab-active' : ''}`}
-                  onClick={() => setCategoryFilter(category)}
+                  onClick={(e) => {
+                    createRipple(e);
+                    setCategoryFilter(category);
+                  }}
                 >
                   {category}
                 </button>
