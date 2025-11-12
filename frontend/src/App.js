@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, Book, Database, Shield, Sparkles, Star, Users, Zap, Gift, User, Linkedin, Mail } from 'lucide-react';
+import { ArrowRight, Book, Database, Shield, Sparkles, Star, Users, Zap, Gift, User, Linkedin, Mail, Code2 } from 'lucide-react';
 import { allFunctions } from './functionsData';
 import DocumentationPage from './Documentation';
 import CreatorPage from './CreatorPage';
+import Terminal from './Terminal';
 
 const API_URL =
   (typeof window !== 'undefined' && window.__MYSQL2_HELPER_API_URL__) ||
@@ -13,7 +14,7 @@ const API_URL =
   'http://localhost:3001/api';
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800;900&display=swap');
 
   :root {
     color-scheme: light;
@@ -27,17 +28,72 @@ const styles = `
     --code-text: #cdd6f4;
   }
 
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
   .mh-root {
     font-family: 'Inter', 'Segoe UI', sans-serif;
     color: #0f172a;
     background: linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%);
     line-height: 1.6;
+    animation: fadeInUp 0.6s ease-out;
   }
 
   .mh-container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 1.5rem;
+  }
+
+  .mh-container-wide {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  #playground .mh-container {
+    max-width: 1400px;
   }
 
   .mh-pill {
@@ -55,7 +111,7 @@ const styles = `
   .mh-hero {
     position: relative;
     overflow: hidden;
-    padding: 4.5rem 0 5rem;
+    padding: 5rem 0 6rem;
     background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
     color: #ffffff;
   }
@@ -68,15 +124,37 @@ const styles = `
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+      radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 50% 20%, rgba(255,255,255,0.1) 0%, transparent 40%);
     pointer-events: none;
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  .mh-hero::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%);
+    background-size: 200% 200%;
+    animation: shimmer 15s linear infinite;
+  }
+
+  .mh-hero .mh-container {
+    position: relative;
+    z-index: 1;
   }
 
   .mh-hero h1 {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-size: clamp(2.5rem, 5vw, 4rem);
     line-height: 1.1;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    font-weight: 900;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 0.8s ease-out 0.2s both;
   }
 
   .mh-hero p {
@@ -200,10 +278,35 @@ const styles = `
 
   .mh-card {
     background: #ffffff;
-    border-radius: 1.1rem;
+    border-radius: 1.25rem;
     border: 1px solid rgba(15, 23, 42, 0.08);
     box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
-    padding: 1.9rem;
+    padding: 2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mh-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .mh-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+    border-color: rgba(99, 102, 241, 0.2);
+  }
+
+  .mh-card:hover::before {
+    opacity: 1;
   }
 
   .mh-card h3 {
@@ -890,7 +993,10 @@ export default function Mysql2HelperWebsite() {
           </div>
 
           <div className="mh-cta-group">
-            <a href="#features" className="mh-btn-primary">
+            <a href="#playground" className="mh-btn-primary">
+              <Code2 size={18} /> Try Playground
+            </a>
+            <a href="#features" className="mh-btn-secondary">
               Explore {functionCount}+ features <ArrowRight size={18} />
             </a>
             <button
@@ -898,7 +1004,7 @@ export default function Mysql2HelperWebsite() {
               className="mh-btn-secondary"
               style={{ cursor: 'pointer', border: 'none' }}
             >
-              <Book size={18} /> Full Documentation
+              <Book size={18} /> Documentation
             </button>
             <a
               href="https://github.com/piyaldeb/mysql2-helper-lite"
@@ -973,6 +1079,15 @@ export default function Mysql2HelperWebsite() {
                 ))}
               </div>
             )}
+          </section>
+
+          <section id="playground" className="mh-section">
+            <SectionTitle
+              eyebrow="Try it now"
+              title="Interactive SQL Playground"
+              description="Test MySQL2 Helper functions in real-time. Run code examples and see instant results."
+            />
+            <Terminal />
           </section>
 
           <section id="integration" className="mh-section">
