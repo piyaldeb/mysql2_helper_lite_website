@@ -1,11 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Terminal as TerminalIcon, Play, Trash2, Copy, Check } from 'lucide-react';
 
-const API_URL =
-  (typeof window !== 'undefined' && window.__MYSQL2_HELPER_API_URL__) ||
-  process.env.REACT_APP_API_URL ||
-  'http://localhost:3001/api';
-
 const EXAMPLE_QUERIES = [
   {
     name: 'Get All Users',
