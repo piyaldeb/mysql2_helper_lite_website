@@ -3,44 +3,91 @@ import { Terminal as TerminalIcon, Play, Trash2, Copy, Check } from 'lucide-reac
 
 const EXAMPLE_QUERIES = [
   {
-    name: 'Get All Users',
-    code: `// Get all active users
-const users = await db.query(
-  'SELECT * FROM users WHERE status = ?',
-  ['active']
-);`,
+    name: 'Install Package',
+    code: `npm install mysql2-helper-lite`,
   },
   {
-    name: 'Insert User',
-    code: `// Insert a new user
-const userId = await db.insert('users', {
-  name: 'Jane Doe',
-  email: 'jane@example.com',
-  status: 'active'
+    name: 'Basic Setup',
+    code: `const { createHelper } = require('mysql2-helper-lite');
+
+const db = createHelper({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  database: 'myapp'
 });`,
   },
   {
-    name: 'Count Records',
-    code: `// Count total users
-const totalUsers = await db.count('users');
-const activeUsers = await db.countBy('users', 'status', 'active');`,
+    name: 'Query Function',
+    code: `// Execute a simple query
+const users = await db.query(
+  'SELECT * FROM users WHERE status = ?',
+  ['active']
+);
+console.log(users);`,
+  },
+  {
+    name: 'Insert Function',
+    code: `// Insert a new record
+const userId = await db.insert('users', {
+  name: 'John Doe',
+  email: 'john@example.com',
+  status: 'active'
+});
+console.log('New user ID:', userId);`,
+  },
+  {
+    name: 'Count Function',
+    code: `// Count records
+const total = await db.count('users');
+const active = await db.countBy('users', 'status', 'active');
+console.log({ total, active });`,
+  },
+  {
+    name: 'Bulk Insert',
+    code: `// Insert multiple records
+const users = [
+  { name: 'Alice', email: 'alice@example.com' },
+  { name: 'Bob', email: 'bob@example.com' }
+];
+await db.bulkInsert('users', users);`,
+  },
+  {
+    name: 'Update Function',
+    code: `// Update a record
+await db.update('users', 123, {
+  status: 'inactive',
+  updated_at: new Date()
+});`,
   },
   {
     name: 'Fuzzy Search',
     code: `// Search with typo tolerance
-const results = await db.fuzzySearch('products',
+const results = await db.fuzzySearch(
+  'products',
   'name',
-  'laptp',  // will match 'laptop'
+  'laptp',  // matches 'laptop'
   { threshold: 0.3 }
 );`,
   },
   {
-    name: 'Time Travel Query',
-    code: `// Query data as it existed yesterday
-const snapshot = await db.timeTravel(
-  'orders',
-  new Date(Date.now() - 86400000)
-);`,
+    name: 'Transaction',
+    code: `// Execute in transaction
+const orderId = await db.transaction(async () => {
+  const id = await db.insert('orders', {
+    user_id: 123,
+    total: 99.99
+  });
+  await db.decrement('products', 456, 'stock', 1);
+  return id;
+});`,
+  },
+  {
+    name: 'Time Travel',
+    code: `// Query historical data
+const yesterday = new Date(Date.now() - 86400000);
+const snapshot = await db.timeTravel('orders', yesterday);
+console.log('Orders as they were:', snapshot);`,
   },
 ];
 
@@ -69,22 +116,72 @@ export default function Terminal() {
     }]);
 
     try {
-      // Simulate API call (replace with actual API when ready)
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 600));
 
-      // Mock response
-      const mockResponse = {
-        success: true,
-        data: [
+      // Generate realistic output based on code content
+      let mockResponse = '';
+
+      if (code.includes('npm install')) {
+        mockResponse = `$ npm install mysql2-helper-lite
+
+added 5 packages, and audited 6 packages in 2s
+
+found 0 vulnerabilities
+
+✓ mysql2-helper-lite@6.0.0 installed successfully`;
+      } else if (code.includes('createHelper')) {
+        mockResponse = `✓ Database connection established
+✓ Helper initialized with 100+ functions
+Ready to use mysql2-helper-lite`;
+      } else if (code.includes('db.query')) {
+        mockResponse = JSON.stringify([
           { id: 1, name: 'John Doe', email: 'john@example.com', status: 'active' },
-          { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'active' }
-        ],
-        executionTime: '12ms'
-      };
+          { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'active' },
+          { id: 3, name: 'Bob Johnson', email: 'bob@example.com', status: 'active' }
+        ], null, 2);
+      } else if (code.includes('db.insert')) {
+        mockResponse = `New user ID: 127
+
+✓ Record inserted successfully`;
+      } else if (code.includes('db.count')) {
+        mockResponse = `{ total: 1247, active: 892 }`;
+      } else if (code.includes('bulkInsert')) {
+        mockResponse = `✓ Inserted 2 records successfully
+Execution time: 45ms`;
+      } else if (code.includes('db.update')) {
+        mockResponse = `✓ Updated 1 record
+Affected rows: 1`;
+      } else if (code.includes('fuzzySearch')) {
+        mockResponse = JSON.stringify([
+          { id: 15, name: 'Laptop Pro 15', price: 1299.99, match_score: 0.92 },
+          { id: 23, name: 'Laptop Air 13', price: 999.99, match_score: 0.88 },
+          { id: 41, name: 'Gaming Laptop', price: 1599.99, match_score: 0.75 }
+        ], null, 2);
+      } else if (code.includes('transaction')) {
+        mockResponse = `Transaction started...
+✓ Order inserted (ID: 8521)
+✓ Product stock decremented
+✓ Transaction committed
+
+Order ID: 8521`;
+      } else if (code.includes('timeTravel')) {
+        mockResponse = `Orders as they were: ${JSON.stringify([
+          { id: 100, total: 299.99, created_at: '2024-01-15T10:30:00Z' },
+          { id: 101, total: 149.99, created_at: '2024-01-15T14:20:00Z' }
+        ], null, 2)}
+
+Snapshot from: ${new Date(Date.now() - 86400000).toISOString()}`;
+      } else {
+        mockResponse = JSON.stringify({
+          success: true,
+          message: 'Query executed successfully',
+          executionTime: '18ms'
+        }, null, 2);
+      }
 
       setOutput(prev => [...prev, {
         type: 'success',
-        content: JSON.stringify(mockResponse, null, 2),
+        content: mockResponse,
         timestamp: new Date().toLocaleTimeString()
       }]);
     } catch (error) {
