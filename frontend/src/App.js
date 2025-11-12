@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, Book, Database, Shield, Sparkles, Star, Users, Zap, Gift, User, Linkedin, Mail, Code2 } from 'lucide-react';
+import { ArrowRight, Book, Database, Shield, Sparkles, Star, Users, Zap, Gift, User, Linkedin, Mail, Code2, Brain, Cpu, CheckCircle, X, Info } from 'lucide-react';
 import { allFunctions } from './functionsData';
 import DocumentationPage from './Documentation';
 import CreatorPage from './CreatorPage';
@@ -905,6 +905,267 @@ const styles = `
     border-left: 3px solid var(--success);
   }
 
+  /* What's Coming Next Section */
+  .whats-next-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .whats-next-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.12) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .whats-next-grid {
+    display: grid;
+    gap: 2rem;
+    margin-top: 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (min-width: 768px) {
+    .whats-next-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .whats-next-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .whats-next-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .whats-next-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+  }
+
+  .whats-next-card:hover::before {
+    opacity: 1;
+  }
+
+  .whats-next-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: grid;
+    place-items: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .whats-next-card h3 {
+    font-size: 1.5rem;
+    margin: 0 0 1rem 0;
+    color: white;
+    position: relative;
+    z-index: 1;
+  }
+
+  .whats-next-card p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .whats-next-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .whats-next-feature {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+  }
+
+  .whats-next-badge {
+    background: linear-gradient(135deg, var(--warning), var(--accent));
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .modal-content {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 1.5rem;
+    max-width: 600px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2.5rem;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+  }
+
+  .modal-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: grid;
+    place-items: center;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .modal-header h3 {
+    margin: 0;
+    font-size: 1.75rem;
+    color: #0f172a;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(15, 23, 42, 0.08);
+    border: none;
+    border-radius: 0.5rem;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #475569;
+  }
+
+  .modal-close:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    transform: rotate(90deg);
+  }
+
+  .modal-description {
+    color: #475569;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+  }
+
+  .modal-functions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modal-function-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: 0.75rem;
+    border-left: 3px solid var(--primary);
+    transition: all 0.2s;
+  }
+
+  .modal-function-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+    transform: translateX(4px);
+  }
+
+  .modal-function-name {
+    font-weight: 700;
+    color: var(--primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+  }
+
+  .modal-function-desc {
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
   /* Creator Section */
   .creator-glimpse {
     background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
@@ -1444,6 +1705,265 @@ function CreatorGlimpse({ onViewFull }) {
   );
 }
 
+// Category descriptions for modal
+const categoryDescriptions = {
+  'Core': {
+    title: 'Core Functions',
+    description: 'Essential database operations that form the foundation of any application. These are the most commonly used functions for basic CRUD operations.',
+    icon: <Database size={24} />,
+    functions: [
+      { name: 'query()', desc: 'Execute raw SQL queries with parameter binding' },
+      { name: 'insert()', desc: 'Insert a single record and return the ID' },
+      { name: 'update()', desc: 'Update records by ID or conditions' },
+      { name: 'delete()', desc: 'Delete records safely with confirmations' },
+      { name: 'findById()', desc: 'Retrieve a single record by its ID' },
+      { name: 'findOne()', desc: 'Find the first record matching conditions' }
+    ]
+  },
+  'Query': {
+    title: 'Query Functions',
+    description: 'Advanced querying capabilities for complex data retrieval scenarios. Build sophisticated queries without writing raw SQL.',
+    icon: <Shield size={24} />,
+    functions: [
+      { name: 'find()', desc: 'Find multiple records with conditions' },
+      { name: 'findWhere()', desc: 'Query with complex WHERE clauses' },
+      { name: 'advancedSearch()', desc: 'Multi-field search with operators' },
+      { name: 'fuzzySearch()', desc: 'Typo-tolerant search with similarity matching' },
+      { name: 'paginate()', desc: 'Paginated results with metadata' }
+    ]
+  },
+  'Aggregate': {
+    title: 'Aggregate Functions',
+    description: 'Statistical and mathematical operations on your data. Perfect for analytics dashboards and reporting.',
+    icon: <Sparkles size={24} />,
+    functions: [
+      { name: 'count()', desc: 'Count total records in a table' },
+      { name: 'countBy()', desc: 'Count records grouped by a field' },
+      { name: 'sum()', desc: 'Calculate sum of numeric values' },
+      { name: 'avg()', desc: 'Calculate average of numeric values' },
+      { name: 'min() / max()', desc: 'Find minimum or maximum values' },
+      { name: 'groupBy()', desc: 'Group records and aggregate' }
+    ]
+  },
+  'Transaction': {
+    title: 'Transaction Functions',
+    description: 'Ensure data consistency with atomic operations. Critical for financial and e-commerce applications.',
+    icon: <Shield size={24} />,
+    functions: [
+      { name: 'transaction()', desc: 'Execute multiple operations atomically' },
+      { name: 'beginTransaction()', desc: 'Start a new transaction manually' },
+      { name: 'commit()', desc: 'Commit pending transaction changes' },
+      { name: 'rollback()', desc: 'Rollback transaction on errors' },
+      { name: 'savepoint()', desc: 'Create transaction savepoints' }
+    ]
+  },
+  'Utility': {
+    title: 'Utility Functions',
+    description: 'Helper functions for common tasks like formatting, validation, and database management.',
+    icon: <Zap size={24} />,
+    functions: [
+      { name: 'exists()', desc: 'Check if records exist with conditions' },
+      { name: 'truncate()', desc: 'Clear all data from a table' },
+      { name: 'getTableInfo()', desc: 'Retrieve table schema information' },
+      { name: 'backup()', desc: 'Create database backups' },
+      { name: 'restore()', desc: 'Restore from backup files' }
+    ]
+  },
+  'Bulk': {
+    title: 'Bulk Operations',
+    description: 'Efficiently handle large datasets with batch operations. Optimized for performance and minimal memory usage.',
+    icon: <Users size={24} />,
+    functions: [
+      { name: 'bulkInsert()', desc: 'Insert multiple records in one query' },
+      { name: 'bulkUpdate()', desc: 'Update multiple records efficiently' },
+      { name: 'bulkDelete()', desc: 'Delete multiple records at once' },
+      { name: 'batchProcess()', desc: 'Process large datasets in chunks' },
+      { name: 'streaming()', desc: 'Stream results for memory efficiency' }
+    ]
+  },
+  'Advanced': {
+    title: 'Advanced Functions',
+    description: 'Cutting-edge features that go beyond traditional SQL. Includes AI-powered operations and time-travel queries.',
+    icon: <Brain size={24} />,
+    functions: [
+      { name: 'timeTravel()', desc: 'Query records as they existed at a specific time' },
+      { name: 'diff()', desc: 'Compare two records and show differences' },
+      { name: 'pivotTable()', desc: 'Transform rows into columns dynamically' },
+      { name: 'rank()', desc: 'Rank records based on criteria' },
+      { name: 'movingAverage()', desc: 'Calculate moving averages over time' },
+      { name: 'cascadeUpdate()', desc: 'Update related records automatically' }
+    ]
+  },
+  'Time': {
+    title: 'Time-Based Functions',
+    description: 'Work with temporal data easily. Filter and analyze records based on time periods.',
+    icon: <Star size={24} />,
+    functions: [
+      { name: 'createdToday()', desc: 'Get records created today' },
+      { name: 'createdThisWeek()', desc: 'Get records from this week' },
+      { name: 'createdThisMonth()', desc: 'Get records from this month' },
+      { name: 'olderThan()', desc: 'Find records older than X days' },
+      { name: 'between()', desc: 'Query records in date range' }
+    ]
+  }
+};
+
+// Modal Component
+function CategoryModal({ category, onClose }) {
+  const info = categoryDescriptions[category];
+
+  if (!info) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose} aria-label="Close">
+          <X size={18} />
+        </button>
+
+        <div className="modal-header">
+          <div className="modal-icon">
+            {info.icon}
+          </div>
+          <h3>{info.title}</h3>
+        </div>
+
+        <p className="modal-description">{info.description}</p>
+
+        <div className="modal-functions-list">
+          <h4 style={{ margin: '0 0 1rem 0', color: '#0f172a', fontSize: '1.1rem' }}>
+            Key Functions:
+          </h4>
+          {info.functions.map((func, index) => (
+            <div key={index} className="modal-function-item">
+              <CheckCircle size={18} color="#6366f1" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <div>
+                <div className="modal-function-name">{func.name}</div>
+                <div className="modal-function-desc">{func.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// What's Coming Next Section
+function WhatsComingNext() {
+  return (
+    <section className="whats-next-section">
+      <div className="mh-container">
+        <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <span className="whats-next-badge">Coming Soon</span>
+          <h2 style={{ fontSize: '2.5rem', margin: '1rem 0', color: 'white' }}>
+            What's Coming Next?
+          </h2>
+          <p style={{ color: 'rgba(255, 255, 255, 0.8)', maxWidth: '700px', margin: '0 auto', fontSize: '1.1rem' }}>
+            We're constantly evolving to bring you the most innovative database tools. Here's what we're working on next.
+          </p>
+        </div>
+
+        <div className="whats-next-grid">
+          <div className="whats-next-card">
+            <div className="whats-next-icon">
+              <Brain size={32} color="white" />
+            </div>
+            <h3>AI-Powered Error Debugging</h3>
+            <p>
+              Intelligent error analysis and automatic debugging suggestions powered by AI.
+              Get instant fixes for common database errors, query optimization tips, and
+              performance recommendations in real-time.
+            </p>
+            <div className="whats-next-features">
+              <div className="whats-next-feature">
+                <CheckCircle size={18} color="#10b981" />
+                <span>Automatic error detection and diagnosis</span>
+              </div>
+              <div className="whats-next-feature">
+                <CheckCircle size={18} color="#10b981" />
+                <span>AI-suggested fixes with code examples</span>
+              </div>
+              <div className="whats-next-feature">
+                <CheckCircle size={18} color="#10b981" />
+                <span>Query optimization recommendations</span>
+              </div>
+              <div className="whats-next-feature">
+                <CheckCircle size={18} color="#10b981" />
+                <span>Performance bottleneck identification</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="whats-next-card">
+            <div className="whats-next-icon">
+              <Cpu size={32} color="white" />
+            </div>
+            <h3>Python Release</h3>
+            <p>
+              MySQL2 Helper Lite is coming to Python! Experience the same powerful
+              functionality with Pythonic syntax. Perfect for Django, Flask, and FastAPI applications.
+            </p>
+            <div className="whats-next-features">
+              <div className="whats-next-feature">
+                <CheckCircle size={18} color="#10b981" />
+                <span>Full feature parity with Node.js version</span>
+              </div>
+              <div className="whats-next-feature">
+                <CheckCircle size={18} color="#10b981" />
+                <span>Type hints and async/await support</span>
+              </div>
+              <div className="whats-next-feature">
+                <CheckCircle size={18} color="#10b981" />
+                <span>Integration with popular Python frameworks</span>
+              </div>
+              <div className="whats-next-feature">
+                <CheckCircle size={18} color="#10b981" />
+                <span>Comprehensive documentation and examples</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '3rem', position: 'relative', zIndex: 1 }}>
+          <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.95rem' }}>
+            Want to be notified when these features launch? Follow us on GitHub!
+          </p>
+          <a
+            href="https://github.com/piyaldeb/mysql2-helper-lite"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginTop: '1rem',
+              padding: '0.75rem 1.5rem',
+              background: 'white',
+              color: '#0f172a',
+              borderRadius: '9999px',
+              textDecoration: 'none',
+              fontWeight: 600,
+              transition: 'all 0.3s',
+              boxShadow: '0 8px 24px rgba(255, 255, 255, 0.2)'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 12px 32px rgba(255, 255, 255, 0.3)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(255, 255, 255, 0.2)';
+            }}
+          >
+            <Star size={18} /> Star on GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // Optimized Bubble Background Component
 function BubbleBackground() {
   const bubbles = useMemo(() => {
@@ -1534,6 +2054,7 @@ export default function Mysql2HelperWebsite() {
   const [adminSecret, setAdminSecret] = useState('');
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [pageLoadTime] = useState(() => Date.now());
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   // Reusable ripple effect function
   const createRipple = (event) => {
@@ -1768,17 +2289,49 @@ export default function Mysql2HelperWebsite() {
             />
             <div className="mh-tabs">
               {categories.map((category) => (
-                <button
-                  key={category}
-                  type="button"
-                  className={`mh-tab ${categoryFilter === category ? 'mh-tab-active' : ''}`}
-                  onClick={(e) => {
-                    createRipple(e);
-                    setCategoryFilter(category);
-                  }}
-                >
-                  {category}
-                </button>
+                <div key={category} style={{ position: 'relative', display: 'inline-block' }}>
+                  <button
+                    type="button"
+                    className={`mh-tab ${categoryFilter === category ? 'mh-tab-active' : ''}`}
+                    onClick={(e) => {
+                      createRipple(e);
+                      setCategoryFilter(category);
+                    }}
+                    style={{ paddingRight: category !== 'All' ? '2.5rem' : '1.3rem' }}
+                  >
+                    {category}
+                  </button>
+                  {category !== 'All' && categoryDescriptions[category] && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCategory(category);
+                      }}
+                      style={{
+                        position: 'absolute',
+                        right: '0.5rem',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '0.25rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: categoryFilter === category ? 'rgba(255, 255, 255, 0.8)' : 'rgba(100, 116, 139, 0.6)',
+                        transition: 'color 0.2s',
+                        zIndex: 10
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.color = categoryFilter === category ? 'white' : '#6366f1'}
+                      onMouseOut={(e) => e.currentTarget.style.color = categoryFilter === category ? 'rgba(255, 255, 255, 0.8)' : 'rgba(100, 116, 139, 0.6)'}
+                      title={`Learn more about ${category} functions`}
+                    >
+                      <Info size={16} />
+                    </button>
+                  )}
+                </div>
               ))}
             </div>
             <p style={{ textAlign: 'center', color: '#475569', marginBottom: '2rem' }}>
@@ -1842,7 +2395,16 @@ export default function Mysql2HelperWebsite() {
         </div>
       </main>
 
+      <WhatsComingNext />
+
       <CreatorGlimpse onViewFull={() => setCurrentView('creator')} />
+
+      {selectedCategory && (
+        <CategoryModal
+          category={selectedCategory}
+          onClose={() => setSelectedCategory(null)}
+        />
+      )}
 
       <footer className="mh-footer">
         <div className="mh-container">
