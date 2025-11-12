@@ -1705,19 +1705,15 @@ function CreatorGlimpse({ onViewFull }) {
   );
 }
 
-// Category descriptions for modal
+// Category descriptions for modal - Extracted from actual functionsData.js
 const categoryDescriptions = {
   'Core': {
     title: 'Core Functions',
-    description: 'Essential database operations that form the foundation of any application. These are the most commonly used functions for basic CRUD operations.',
+    description: 'Essential database operations that form the foundation of any application. Execute raw SQL and retrieve single records.',
     icon: <Database size={24} />,
     functions: [
-      { name: 'query()', desc: 'Execute raw SQL queries with parameter binding' },
-      { name: 'insert()', desc: 'Insert a single record and return the ID' },
-      { name: 'update()', desc: 'Update records by ID or conditions' },
-      { name: 'delete()', desc: 'Delete records safely with confirmations' },
-      { name: 'findById()', desc: 'Retrieve a single record by its ID' },
-      { name: 'findOne()', desc: 'Find the first record matching conditions' }
+      { name: 'query()', desc: 'Execute raw SQL queries with optional caching' },
+      { name: 'getOne()', desc: 'Get a single row from query results' }
     ]
   },
   'Aggregation': {
@@ -1725,52 +1721,50 @@ const categoryDescriptions = {
     description: 'Statistical and mathematical operations on your data. Perfect for analytics dashboards, reports, and data analysis.',
     icon: <Sparkles size={24} />,
     functions: [
-      { name: 'count()', desc: 'Count total records in a table' },
-      { name: 'countBy()', desc: 'Count records grouped by a field value' },
-      { name: 'sum()', desc: 'Calculate sum of numeric column values' },
-      { name: 'avg()', desc: 'Calculate average of numeric values' },
-      { name: 'min() / max()', desc: 'Find minimum or maximum values' },
-      { name: 'groupBy()', desc: 'Group records and perform aggregations' },
-      { name: 'aggregate()', desc: 'Complex aggregation with multiple functions' }
+      { name: 'count()', desc: 'Count records matching conditions' },
+      { name: 'countBy()', desc: 'Count records grouped by a column' },
+      { name: 'exists()', desc: 'Check if a record exists' },
+      { name: 'aggregate()', desc: 'Perform multiple aggregation functions' },
+      { name: 'min()', desc: 'Find minimum value in a column' },
+      { name: 'max()', desc: 'Find maximum value in a column' },
+      { name: 'avg()', desc: 'Calculate average of a column' },
+      { name: 'sum()', desc: 'Calculate sum of a column' },
+      { name: 'median()', desc: 'Calculate median value (MySQL 8.0+)' },
+      { name: 'percentile()', desc: 'Calculate percentile value' },
+      { name: 'distinctValues()', desc: 'Get distinct values from a column' },
+      { name: 'pluck()', desc: 'Extract a single column as an array' },
+      { name: 'groupConcat()', desc: 'Concatenate column values grouped by another column' }
     ]
   },
   'Analytics': {
     title: 'Analytics Functions',
-    description: 'Advanced analytics and business intelligence features. Track metrics, generate insights, and analyze trends.',
+    description: 'Advanced analytics for business intelligence. Create pivot tables, rank records, analyze time series, and perform conditional aggregations.',
     icon: <Brain size={24} />,
     functions: [
-      { name: 'trend()', desc: 'Analyze data trends over time periods' },
-      { name: 'growth()', desc: 'Calculate growth rates and percentages' },
-      { name: 'cohort()', desc: 'Cohort analysis for user retention' },
-      { name: 'funnel()', desc: 'Track conversion funnels and drop-offs' },
-      { name: 'segment()', desc: 'Segment data by custom criteria' },
-      { name: 'metrics()', desc: 'Calculate key performance indicators' }
+      { name: 'pivotTable()', desc: 'Create pivot tables for data analysis' },
+      { name: 'rank()', desc: 'Rank records with tie handling' },
+      { name: 'movingAverage()', desc: 'Calculate moving average for time series' },
+      { name: 'conditionalAggregate()', desc: 'Aggregate with conditional logic' }
     ]
   },
   'Cache': {
     title: 'Cache Functions',
-    description: 'Caching utilities to improve query performance and reduce database load. Automatic cache invalidation and management.',
+    description: 'Caching utilities to improve query performance and reduce database load. Clear cache, get statistics, and warm frequently accessed data.',
     icon: <Zap size={24} />,
     functions: [
-      { name: 'cache()', desc: 'Cache query results with TTL' },
-      { name: 'invalidate()', desc: 'Invalidate specific cache entries' },
-      { name: 'remember()', desc: 'Cache or retrieve cached results' },
-      { name: 'forget()', desc: 'Remove items from cache' },
-      { name: 'flush()', desc: 'Clear all cache entries' },
-      { name: 'cacheForever()', desc: 'Cache without expiration' }
+      { name: 'clearCache()', desc: 'Clear query cache for table or all' },
+      { name: 'getCacheStats()', desc: 'Get cache statistics' },
+      { name: 'warmCache()', desc: 'Pre-load frequently accessed data' }
     ]
   },
   'Database': {
     title: 'Database Management',
-    description: 'Database-level operations for schema management, migrations, and database administration tasks.',
+    description: 'Database-level operations for backup, versioning, and cascading updates across related records.',
     icon: <Database size={24} />,
     functions: [
-      { name: 'createDatabase()', desc: 'Create a new database' },
-      { name: 'dropDatabase()', desc: 'Delete an entire database' },
-      { name: 'listDatabases()', desc: 'List all available databases' },
-      { name: 'useDatabase()', desc: 'Switch to a different database' },
-      { name: 'getDatabaseSize()', desc: 'Get database storage size' },
-      { name: 'optimizeDatabase()', desc: 'Optimize database performance' }
+      { name: 'snapshot()', desc: 'Create a backup snapshot of a table' },
+      { name: 'createVersion()', desc: 'Create a version history entry' },
+      { name: 'cascadeUpdate()', desc: 'Update record and all related records' }
     ]
   },
   'Date': {
@@ -1778,25 +1772,28 @@ const categoryDescriptions = {
     description: 'Work with temporal data easily. Filter and analyze records based on dates, times, and time periods.',
     icon: <Star size={24} />,
     functions: [
-      { name: 'createdToday()', desc: 'Get records created today' },
-      { name: 'createdThisWeek()', desc: 'Get records from this week' },
-      { name: 'createdThisMonth()', desc: 'Get records from this month' },
-      { name: 'olderThan()', desc: 'Find records older than X days' },
-      { name: 'between()', desc: 'Query records in date range' },
-      { name: 'dateFormat()', desc: 'Format dates for display' }
+      { name: 'whereDateBetween()', desc: 'Select records where date is between two dates' },
+      { name: 'whereDate()', desc: 'Select records for a specific date' },
+      { name: 'whereYear()', desc: 'Select records for a specific year' },
+      { name: 'whereMonth()', desc: 'Select records for a specific month' },
+      { name: 'whereDay()', desc: 'Select records for a specific day of month' },
+      { name: 'createdToday()', desc: 'Select records created today' },
+      { name: 'createdThisWeek()', desc: 'Select records created this week' },
+      { name: 'createdThisMonth()', desc: 'Select records created this month' },
+      { name: 'createdThisYear()', desc: 'Select records created this year' }
     ]
   },
   'Delete': {
     title: 'Delete Operations',
-    description: 'Safe deletion functions with various strategies. Includes hard deletes, soft deletes, and cascade operations.',
+    description: 'Safe deletion functions with various strategies. Includes hard deletes, soft deletes, batch operations, and restore capabilities.',
     icon: <Shield size={24} />,
     functions: [
-      { name: 'delete()', desc: 'Permanently delete records' },
-      { name: 'deleteById()', desc: 'Delete a specific record by ID' },
-      { name: 'deleteWhere()', desc: 'Delete records matching conditions' },
-      { name: 'deleteAll()', desc: 'Delete all records from a table' },
-      { name: 'cascadeDelete()', desc: 'Delete with related records' },
-      { name: 'bulkDelete()', desc: 'Delete multiple records efficiently' }
+      { name: 'deleteById()', desc: 'Delete a record by ID (supports soft delete)' },
+      { name: 'deleteWhere()', desc: 'Delete all records matching conditions' },
+      { name: 'batchDelete()', desc: 'Delete multiple records by IDs' },
+      { name: 'truncate()', desc: 'Remove all rows from a table (reset auto-increment)' },
+      { name: 'restore()', desc: 'Restore a soft-deleted record' },
+      { name: 'restoreWhere()', desc: 'Restore multiple soft-deleted records' }
     ]
   },
   'Hooks': {
@@ -1804,12 +1801,8 @@ const categoryDescriptions = {
     description: 'Event-driven hooks that run before or after database operations. Perfect for validation, logging, and automation.',
     icon: <Zap size={24} />,
     functions: [
-      { name: 'beforeInsert()', desc: 'Hook executed before inserting records' },
-      { name: 'afterInsert()', desc: 'Hook executed after inserting records' },
-      { name: 'beforeUpdate()', desc: 'Hook executed before updates' },
-      { name: 'afterUpdate()', desc: 'Hook executed after updates' },
-      { name: 'beforeDelete()', desc: 'Hook executed before deletions' },
-      { name: 'afterDelete()', desc: 'Hook executed after deletions' }
+      { name: 'addHook()', desc: 'Add before/after hooks for operations' },
+      { name: 'removeHook()', desc: 'Remove a registered hook' }
     ]
   },
   'Insert': {
@@ -1817,12 +1810,12 @@ const categoryDescriptions = {
     description: 'Functions to add new records to your database. Supports single inserts, bulk inserts, and upsert operations.',
     icon: <Database size={24} />,
     functions: [
-      { name: 'insert()', desc: 'Insert a single record and return ID' },
-      { name: 'insertMany()', desc: 'Insert multiple records at once' },
-      { name: 'insertOrUpdate()', desc: 'Insert or update if exists (upsert)' },
-      { name: 'insertAndReturn()', desc: 'Insert and return the full record' },
-      { name: 'bulkInsert()', desc: 'High-performance bulk insert' },
-      { name: 'insertIgnore()', desc: 'Insert and ignore duplicates' }
+      { name: 'insert()', desc: 'Insert a single record and return the ID' },
+      { name: 'insertAndReturn()', desc: 'Insert a record and return the complete row' },
+      { name: 'bulkInsert()', desc: 'Insert multiple records at once for better performance' },
+      { name: 'bulkInsertAndReturn()', desc: 'Bulk insert and return all inserted records' },
+      { name: 'upsert()', desc: 'Insert or update record if it already exists' },
+      { name: 'bulkUpsert()', desc: 'Bulk upsert multiple records efficiently' }
     ]
   },
   'JSON': {
@@ -1831,75 +1824,65 @@ const categoryDescriptions = {
     icon: <Code2 size={24} />,
     functions: [
       { name: 'jsonExtract()', desc: 'Extract values from JSON columns' },
-      { name: 'jsonSet()', desc: 'Set values in JSON columns' },
-      { name: 'jsonArray()', desc: 'Work with JSON arrays' },
-      { name: 'jsonObject()', desc: 'Create JSON objects' },
-      { name: 'jsonQuery()', desc: 'Query JSON data with paths' },
-      { name: 'jsonValidate()', desc: 'Validate JSON structure' }
+      { name: 'jsonContains()', desc: 'Find records where JSON contains value' }
     ]
   },
   'Monitoring': {
     title: 'Monitoring & Observability',
-    description: 'Monitor query performance, track slow queries, and collect metrics. Essential for production applications.',
+    description: 'Monitor query performance, check database health, analyze connection pools, and maintain audit trails.',
     icon: <Shield size={24} />,
     functions: [
-      { name: 'queryLog()', desc: 'Log all executed queries' },
-      { name: 'slowQueryLog()', desc: 'Track queries exceeding time threshold' },
-      { name: 'connectionStats()', desc: 'Monitor connection pool statistics' },
-      { name: 'metrics()', desc: 'Collect performance metrics' },
-      { name: 'healthCheck()', desc: 'Check database health status' },
-      { name: 'explain()', desc: 'Analyze query execution plans' }
+      { name: 'healthCheck()', desc: 'Check database connection health' },
+      { name: 'getDatabaseStats()', desc: 'Get overall database statistics' },
+      { name: 'getPoolInfo()', desc: 'Get connection pool information' },
+      { name: 'queryStats()', desc: 'Analyze query performance patterns' },
+      { name: 'logAudit()', desc: 'Log audit trail for actions' }
     ]
   },
   'Pagination': {
     title: 'Pagination Functions',
-    description: 'Paginate large result sets efficiently. Includes cursor-based and offset-based pagination strategies.',
+    description: 'Paginate large result sets efficiently. Includes cursor-based and offset-based pagination, plus chunking for processing.',
     icon: <Users size={24} />,
     functions: [
-      { name: 'paginate()', desc: 'Offset-based pagination with page numbers' },
-      { name: 'cursorPaginate()', desc: 'Cursor-based pagination for large datasets' },
-      { name: 'simplePaginate()', desc: 'Simple next/previous pagination' },
-      { name: 'paginateRaw()', desc: 'Paginate raw SQL queries' },
-      { name: 'infiniteScroll()', desc: 'Infinite scroll pagination' }
+      { name: 'paginate()', desc: 'Offset-based pagination with metadata' },
+      { name: 'cursorPaginate()', desc: 'Cursor-based pagination for infinite scroll' },
+      { name: 'chunk()', desc: 'Process large datasets in chunks' }
     ]
   },
   'Raw': {
     title: 'Raw SQL Functions',
-    description: 'Execute raw SQL when you need full control. Safely bind parameters and handle complex queries.',
+    description: 'Execute raw SQL when you need full control. Safely bind parameters and handle complex queries with or without safety checks.',
     icon: <Code2 size={24} />,
     functions: [
-      { name: 'raw()', desc: 'Execute raw SQL with parameter binding' },
-      { name: 'rawSelect()', desc: 'Execute raw SELECT queries' },
-      { name: 'rawInsert()', desc: 'Execute raw INSERT statements' },
-      { name: 'rawUpdate()', desc: 'Execute raw UPDATE statements' },
-      { name: 'rawDelete()', desc: 'Execute raw DELETE statements' },
-      { name: 'prepare()', desc: 'Prepare statements for execution' }
+      { name: 'raw()', desc: 'Execute raw SQL (with safety checks)' },
+      { name: 'rawUnsafe()', desc: 'Execute raw SQL (no safety checks)' }
     ]
   },
   'Relations': {
     title: 'Relationship Functions',
-    description: 'Handle related data across tables. Support for one-to-many, many-to-many, and polymorphic relationships.',
+    description: 'Handle related data across tables. Support for one-to-one, one-to-many, many-to-many, and table joins.',
     icon: <Users size={24} />,
     functions: [
-      { name: 'hasMany()', desc: 'Define one-to-many relationships' },
-      { name: 'belongsTo()', desc: 'Define inverse relationships' },
-      { name: 'manyToMany()', desc: 'Define many-to-many relationships' },
-      { name: 'hasManyThrough()', desc: 'Define distant relationships' },
-      { name: 'morphMany()', desc: 'Polymorphic relationships' },
-      { name: 'with()', desc: 'Eager load relationships' }
+      { name: 'join()', desc: 'Perform table joins' },
+      { name: 'multiJoin()', desc: 'Join multiple tables at once' },
+      { name: 'hasOne()', desc: 'Get related record (one-to-one)' },
+      { name: 'hasMany()', desc: 'Get related records (one-to-many)' },
+      { name: 'belongsTo()', desc: 'Get parent record (inverse of hasMany)' },
+      { name: 'belongsToMany()', desc: 'Get many-to-many relationships via pivot table' }
     ]
   },
   'Schema': {
     title: 'Schema Management',
-    description: 'Database schema operations for creating, modifying, and managing table structures. Migration support included.',
+    description: 'Database schema operations for inspecting table structures, indexes, and optimizing performance.',
     icon: <Database size={24} />,
     functions: [
-      { name: 'createTable()', desc: 'Create new database tables' },
-      { name: 'dropTable()', desc: 'Delete existing tables' },
-      { name: 'alterTable()', desc: 'Modify table structure' },
-      { name: 'addColumn()', desc: 'Add columns to existing tables' },
-      { name: 'dropColumn()', desc: 'Remove columns from tables' },
-      { name: 'addIndex()', desc: 'Create indexes for performance' }
+      { name: 'getTableSchema()', desc: 'Get table structure information' },
+      { name: 'getTableIndexes()', desc: 'Get table indexes' },
+      { name: 'getTableInfo()', desc: 'Get table metadata (size, rows, etc)' },
+      { name: 'listTables()', desc: 'List all tables in database' },
+      { name: 'tableExists()', desc: 'Check if a table exists' },
+      { name: 'optimizeTable()', desc: 'Optimize table for better performance' },
+      { name: 'analyzeTable()', desc: 'Analyze table statistics' }
     ]
   },
   'Search': {
@@ -1907,38 +1890,36 @@ const categoryDescriptions = {
     description: 'Full-text search and advanced search capabilities. Find data quickly with fuzzy matching and relevance scoring.',
     icon: <Shield size={24} />,
     functions: [
-      { name: 'search()', desc: 'Full-text search across columns' },
-      { name: 'fuzzySearch()', desc: 'Typo-tolerant fuzzy matching' },
-      { name: 'whereSearch()', desc: 'Search with complex conditions' },
-      { name: 'relevanceScore()', desc: 'Calculate search relevance' },
-      { name: 'highlightMatches()', desc: 'Highlight search terms' },
-      { name: 'autocomplete()', desc: 'Autocomplete suggestions' }
+      { name: 'search()', desc: 'Simple keyword search across multiple fields' },
+      { name: 'advancedSearch()', desc: 'Advanced search with operators (LIKE, IN, BETWEEN, etc)' },
+      { name: 'fullTextSearch()', desc: 'Full-text search with relevance scoring' },
+      { name: 'fuzzySearch()', desc: 'Find approximate matches with scoring' }
     ]
   },
   'Select': {
     title: 'Select & Query Functions',
-    description: 'Flexible data retrieval with powerful querying options. Build complex SELECT statements with ease.',
+    description: 'Flexible data retrieval with powerful querying options. Find, filter, and retrieve records with various strategies.',
     icon: <Shield size={24} />,
     functions: [
-      { name: 'select()', desc: 'Select specific columns' },
-      { name: 'selectRaw()', desc: 'Select with raw SQL expressions' },
-      { name: 'distinct()', desc: 'Select distinct values' },
-      { name: 'selectAll()', desc: 'Select all columns' },
-      { name: 'first()', desc: 'Get the first matching record' },
-      { name: 'pluck()', desc: 'Get a single column as array' }
+      { name: 'select()', desc: 'Advanced select with filtering, ordering, grouping, and pagination' },
+      { name: 'selectWhere()', desc: 'Simple select with WHERE conditions' },
+      { name: 'findOne()', desc: 'Find a single record by conditions' },
+      { name: 'findOrCreate()', desc: 'Find existing record or create new one' },
+      { name: 'findOneAndUpdate()', desc: 'Find and update a record in one operation' },
+      { name: 'findOneAndDelete()', desc: 'Find and delete a record' },
+      { name: 'getByIds()', desc: 'Get multiple records by their IDs' },
+      { name: 'first()', desc: 'Get the first record in the table' },
+      { name: 'last()', desc: 'Get the last record in the table' },
+      { name: 'random()', desc: 'Get random record(s) from table' }
     ]
   },
   'Soft Delete': {
     title: 'Soft Delete Functions',
-    description: 'Soft deletion keeps records in the database but marks them as deleted. Easily restore deleted records when needed.',
+    description: 'Soft deletion keeps records in the database but marks them as deleted. Query and restore soft-deleted records.',
     icon: <Shield size={24} />,
     functions: [
-      { name: 'softDelete()', desc: 'Mark records as deleted without removing them' },
-      { name: 'restore()', desc: 'Restore soft-deleted records' },
-      { name: 'forceDelete()', desc: 'Permanently delete soft-deleted records' },
-      { name: 'withTrashed()', desc: 'Include soft-deleted records in query' },
-      { name: 'onlyTrashed()', desc: 'Query only soft-deleted records' },
-      { name: 'restoreAll()', desc: 'Restore multiple deleted records' }
+      { name: 'withTrashed()', desc: 'Include soft-deleted records in results' },
+      { name: 'onlyTrashed()', desc: 'Get only soft-deleted records' }
     ]
   },
   'Transaction': {
@@ -1946,52 +1927,57 @@ const categoryDescriptions = {
     description: 'Ensure data consistency with atomic operations. Critical for financial and e-commerce applications where data integrity is essential.',
     icon: <Shield size={24} />,
     functions: [
-      { name: 'transaction()', desc: 'Execute multiple operations atomically' },
-      { name: 'beginTransaction()', desc: 'Start a new transaction manually' },
-      { name: 'commit()', desc: 'Commit pending transaction changes' },
-      { name: 'rollback()', desc: 'Rollback transaction on errors' },
-      { name: 'savepoint()', desc: 'Create transaction savepoints' },
-      { name: 'withTransaction()', desc: 'Auto-rollback on exceptions' }
+      { name: 'transaction()', desc: 'Execute multiple operations in a transaction' }
     ]
   },
   'Update': {
     title: 'Update Operations',
-    description: 'Modify existing records with flexible update strategies. Support for single updates, bulk updates, and conditional updates.',
+    description: 'Modify existing records with flexible update strategies. Support for single updates, batch updates, and atomic increments/decrements.',
     icon: <Zap size={24} />,
     functions: [
-      { name: 'update()', desc: 'Update records by ID or conditions' },
-      { name: 'updateWhere()', desc: 'Update records matching conditions' },
-      { name: 'increment()', desc: 'Increment numeric field values' },
-      { name: 'decrement()', desc: 'Decrement numeric field values' },
-      { name: 'bulkUpdate()', desc: 'Update multiple records efficiently' },
-      { name: 'updateOrInsert()', desc: 'Update existing or insert new' }
+      { name: 'updateById()', desc: 'Update a record by its ID' },
+      { name: 'updateByIdAndReturn()', desc: 'Update by ID and return the updated record' },
+      { name: 'updateWhere()', desc: 'Update all records matching conditions' },
+      { name: 'batchUpdate()', desc: 'Update multiple records with different values in a transaction' },
+      { name: 'increment()', desc: 'Increment a numeric field atomically' },
+      { name: 'decrement()', desc: 'Decrement a numeric field atomically' },
+      { name: 'incrementMany()', desc: 'Increment multiple fields at once' },
+      { name: 'decrementMany()', desc: 'Decrement multiple fields at once' }
     ]
   },
   'Utilities': {
     title: 'Utility Functions',
-    description: 'Helper functions for common tasks like validation, formatting, debugging, and database maintenance.',
+    description: 'Helper functions for comparing records, cloning, finding duplicates, time travel queries, and smart data operations.',
     icon: <Zap size={24} />,
     functions: [
-      { name: 'exists()', desc: 'Check if records exist' },
-      { name: 'truncate()', desc: 'Clear all data from a table' },
-      { name: 'getTableInfo()', desc: 'Get table schema information' },
-      { name: 'clone()', desc: 'Clone query builder instance' },
-      { name: 'dd()', desc: 'Dump query and die (debugging)' },
-      { name: 'toSql()', desc: 'Get SQL string without executing' }
+      { name: 'diff()', desc: 'Compare two records and show differences' },
+      { name: 'clone()', desc: 'Clone a record with optional overrides' },
+      { name: 'isDuplicate()', desc: 'Check if a record would be a duplicate' },
+      { name: 'findDuplicates()', desc: 'Find duplicate records by fields' },
+      { name: 'weightedRandom()', desc: 'Get random records with weighted probability' },
+      { name: 'batchTransform()', desc: 'Transform all records with a function' },
+      { name: 'bulkConditionalUpdate()', desc: 'Update multiple records with different conditions' },
+      { name: 'timeTravel()', desc: 'Query records as they were at a timestamp' },
+      { name: 'smartMerge()', desc: 'Merge data from multiple tables' }
     ]
   },
   'Where': {
     title: 'Where Clause Functions',
-    description: 'Build complex WHERE conditions with intuitive syntax. Support for AND, OR, IN, BETWEEN, and more.',
+    description: 'Build complex WHERE conditions with intuitive syntax. Support for IN, BETWEEN, NULL checks, comparisons, and pattern matching.',
     icon: <Shield size={24} />,
     functions: [
-      { name: 'where()', desc: 'Basic WHERE conditions' },
-      { name: 'orWhere()', desc: 'OR WHERE conditions' },
-      { name: 'whereIn()', desc: 'WHERE column IN array' },
-      { name: 'whereBetween()', desc: 'WHERE value BETWEEN range' },
-      { name: 'whereNull()', desc: 'WHERE column IS NULL' },
-      { name: 'whereNotNull()', desc: 'WHERE column IS NOT NULL' },
-      { name: 'whereRaw()', desc: 'Raw WHERE with SQL' }
+      { name: 'whereIn()', desc: 'Select records where column is in array' },
+      { name: 'whereNotIn()', desc: 'Select records where column is NOT in array' },
+      { name: 'whereBetween()', desc: 'Select records where column is between two values' },
+      { name: 'whereNotBetween()', desc: 'Select records where column is NOT between values' },
+      { name: 'whereNull()', desc: 'Select records where column is NULL' },
+      { name: 'whereNotNull()', desc: 'Select records where column is NOT NULL' },
+      { name: 'whereGreaterThan()', desc: 'Select records where column > value' },
+      { name: 'whereLessThan()', desc: 'Select records where column < value' },
+      { name: 'whereStartsWith()', desc: 'Select records where column starts with value' },
+      { name: 'whereEndsWith()', desc: 'Select records where column ends with value' },
+      { name: 'whereContains()', desc: 'Select records where column contains value' },
+      { name: 'whereLike()', desc: 'Select records with LIKE pattern' }
     ]
   }
 };
