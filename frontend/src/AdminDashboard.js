@@ -348,13 +348,18 @@ function AdminDashboard({ onBack, adminSecret }) {
       };
 
       const [statsRes, visitorsRes, visitorStatsRes] = await Promise.all([
-        fetch(`${API_URL}/analytics/summary`, { headers }),
-        fetch(`${API_URL}/analytics/visitors?limit=50`, { headers }),
-        fetch(`${API_URL}/analytics/visitor-stats?days=${daysFilter}`, { headers }),
+        fetch(`${API_URL}/analytics/summary`, { headers }).catch(() => null),
+        fetch(`${API_URL}/analytics/visitors?limit=50`, { headers }).catch(() => null),
+        fetch(`${API_URL}/analytics/visitor-stats?days=${daysFilter}`, { headers }).catch(() => null),
       ]);
 
+      // Check if backend is unavailable
+      if (!statsRes || !visitorsRes || !visitorStatsRes) {
+        throw new Error('Backend API is not available. Please ensure the backend server is running and properly configured.');
+      }
+
       if (!statsRes.ok || !visitorsRes.ok || !visitorStatsRes.ok) {
-        throw new Error('Failed to fetch data');
+        throw new Error('Failed to fetch data from backend');
       }
 
       const [statsData, visitorsData, visitorStatsData] = await Promise.all([
@@ -368,6 +373,19 @@ function AdminDashboard({ onBack, adminSecret }) {
     } catch (err) {
       setError(err.message);
       console.error('Error fetching data:', err);
+
+      // Set demo data if backend is unavailable
+      if (err.message.includes('Backend API is not available')) {
+        setStats({
+          totalPageviews: 0,
+          uniqueVisitors: 0,
+          avgVisitDuration: 0,
+          totalDownloads: 1500,
+          githubStars: 250,
+          activeUsers: 1000,
+        });
+        setVisitors([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -439,7 +457,25 @@ function AdminDashboard({ onBack, adminSecret }) {
         </div>
       </div>
 
-      {error && <div className="error">Error: {error}</div>}
+      {error && (
+        <div className="error">
+          <strong>⚠️ {error}</strong>
+          <p style={{ marginTop: '0.5rem', fontSize: '0.9rem', opacity: 0.9 }}>
+            {error.includes('Backend API is not available') && (
+              <>
+                The admin dashboard requires a running backend server. To set up the backend:
+                <ol style={{ marginTop: '0.5rem', marginLeft: '1.5rem' }}>
+                  <li>Navigate to the <code>backend</code> directory</li>
+                  <li>Install dependencies: <code>npm install</code></li>
+                  <li>Configure <code>.env</code> file with MongoDB URI and ADMIN_SECRET</li>
+                  <li>Start the server: <code>npm start</code></li>
+                </ol>
+                See <code>ADMIN.md</code> for detailed setup instructions.
+              </>
+            )}
+          </p>
+        </div>
+      )}
 
       <div className="filter-controls">
         <label>
