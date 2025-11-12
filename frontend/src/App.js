@@ -1509,7 +1509,6 @@ export default function Mysql2HelperWebsite() {
   const [categoryFilter, setCategoryFilter] = useState('Core');
   const [currentView, setCurrentView] = useState('home'); // 'home', 'docs', 'creator', or 'admin'
   const [adminSecret, setAdminSecret] = useState('');
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [pageLoadTime] = useState(() => Date.now());
 
@@ -1642,7 +1641,6 @@ export default function Mysql2HelperWebsite() {
         onBack={() => {
           setCurrentView('home');
           setAdminSecret('');
-          setShowAdminLogin(false);
         }}
         adminSecret={adminSecret}
       />

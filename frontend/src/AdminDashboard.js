@@ -5,15 +5,12 @@ import {
   Clock, 
   Globe, 
   Monitor, 
-  Smartphone, 
-  Tablet,
   TrendingUp,
   Calendar,
   RefreshCw,
   Edit,
   Save,
   X,
-  LogOut,
   Home
 } from 'lucide-react';
 
@@ -380,6 +377,7 @@ function AdminDashboard({ onBack, adminSecret }) {
     fetchData();
     const interval = setInterval(fetchData, 30000); // Refresh every 30 seconds
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [daysFilter, adminSecret]);
 
   const handleUpdateStats = async () => {
