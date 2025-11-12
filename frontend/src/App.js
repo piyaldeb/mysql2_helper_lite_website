@@ -1507,7 +1507,13 @@ export default function Mysql2HelperWebsite() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('Core');
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'docs', 'creator', or 'admin'
+  const [currentView, setCurrentView] = useState(() => {
+    // Check if we're on the admin route
+    if (typeof window !== 'undefined' && window.location.pathname === '/admin') {
+      return 'admin';
+    }
+    return 'home';
+  }); // 'home', 'docs', 'creator', or 'admin'
   const [adminSecret, setAdminSecret] = useState('');
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [pageLoadTime] = useState(() => Date.now());
@@ -1636,24 +1642,32 @@ export default function Mysql2HelperWebsite() {
   }
 
   if (currentView === 'admin') {
+    // Check if admin secret is set, if not prompt for it
+    if (!adminSecret) {
+      const secret = prompt('Enter admin password:');
+      if (secret === '2326') {
+        setAdminSecret('2326');
+      } else if (secret) {
+        alert('Invalid password');
+        window.location.href = '/';
+        return null;
+      } else {
+        window.location.href = '/';
+        return null;
+      }
+    }
+
     return (
       <AdminDashboard
         onBack={() => {
           setCurrentView('home');
           setAdminSecret('');
+          window.location.href = '/';
         }}
         adminSecret={adminSecret}
       />
     );
   }
-
-  const handleAdminLogin = () => {
-    const secret = prompt('Enter admin secret:');
-    if (secret) {
-      setAdminSecret(secret);
-      setCurrentView('admin');
-    }
-  };
 
   return (
     <div className="mh-root">
@@ -1704,16 +1718,6 @@ export default function Mysql2HelperWebsite() {
             >
               View on GitHub
             </a>
-            <button
-              onClick={(e) => {
-                createRipple(e);
-                handleAdminLogin();
-              }}
-              className="mh-btn-secondary"
-              style={{ cursor: 'pointer', border: 'none' }}
-            >
-              <Database size={18} /> Admin
-            </button>
           </div>
         </div>
       </header>
