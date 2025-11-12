@@ -4,6 +4,7 @@ import { allFunctions } from './functionsData';
 import DocumentationPage from './Documentation';
 import CreatorPage from './CreatorPage';
 import Terminal from './Terminal';
+import AdminDashboard from './AdminDashboard';
 
 const API_URL =
   (typeof window !== 'undefined' && window.__MYSQL2_HELPER_API_URL__) ||
@@ -1506,7 +1507,11 @@ export default function Mysql2HelperWebsite() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('Core');
-  const [currentView, setCurrentView] = useState('home'); // 'home' or 'docs'
+  const [currentView, setCurrentView] = useState('home'); // 'home', 'docs', 'creator', or 'admin'
+  const [adminSecret, setAdminSecret] = useState('');
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [pageLoadTime] = useState(() => Date.now());
 
   // Reusable ripple effect function
   const createRipple = (event) => {
@@ -1528,6 +1533,45 @@ export default function Mysql2HelperWebsite() {
       ripple.remove();
     }, 1000);
   }
+
+  // Track page view
+  useEffect(() => {
+    const trackPageView = async () => {
+      try {
+        const visitDuration = Math.floor((Date.now() - pageLoadTime) / 1000);
+        await fetch(`${API_URL}/analytics/pageview`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            path: window.location.pathname,
+            sessionId,
+            visitDuration,
+          }),
+        });
+      } catch (err) {
+        console.error('Failed to track pageview:', err);
+      }
+    };
+
+    trackPageView();
+
+    // Track page unload
+    const handleBeforeUnload = () => {
+      const visitDuration = Math.floor((Date.now() - pageLoadTime) / 1000);
+      const data = JSON.stringify({
+        path: window.location.pathname,
+        sessionId,
+        visitDuration,
+      });
+      const blob = new Blob([data], { type: 'application/json' });
+      navigator.sendBeacon(`${API_URL}/analytics/pageview`, blob);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [sessionId, pageLoadTime]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1592,6 +1636,27 @@ export default function Mysql2HelperWebsite() {
     return <CreatorPage onBack={() => setCurrentView('home')} />;
   }
 
+  if (currentView === 'admin') {
+    return (
+      <AdminDashboard
+        onBack={() => {
+          setCurrentView('home');
+          setAdminSecret('');
+          setShowAdminLogin(false);
+        }}
+        adminSecret={adminSecret}
+      />
+    );
+  }
+
+  const handleAdminLogin = () => {
+    const secret = prompt('Enter admin secret:');
+    if (secret) {
+      setAdminSecret(secret);
+      setCurrentView('admin');
+    }
+  };
+
   return (
     <div className="mh-root">
       <style>{styles}</style>
@@ -1641,6 +1706,16 @@ export default function Mysql2HelperWebsite() {
             >
               View on GitHub
             </a>
+            <button
+              onClick={(e) => {
+                createRipple(e);
+                handleAdminLogin();
+              }}
+              className="mh-btn-secondary"
+              style={{ cursor: 'pointer', border: 'none' }}
+            >
+              <Database size={18} /> Admin
+            </button>
           </div>
         </div>
       </header>

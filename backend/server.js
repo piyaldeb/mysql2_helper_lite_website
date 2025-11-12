@@ -68,9 +68,33 @@ const statsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const visitorSchema = new mongoose.Schema(
+  {
+    ip: { type: String, required: true },
+    userAgent: { type: String },
+    referer: { type: String },
+    path: { type: String, default: '/' },
+    country: { type: String },
+    city: { type: String },
+    device: { type: String },
+    browser: { type: String },
+    os: { type: String },
+    sessionId: { type: String },
+    visitDuration: { type: Number, default: 0 },
+    timestamp: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
+
+// Index for faster queries
+visitorSchema.index({ timestamp: -1 });
+visitorSchema.index({ path: 1, timestamp: -1 });
+visitorSchema.index({ sessionId: 1 });
+
 const Feature = mongoose.model('Feature', featureSchema);
 const Example = mongoose.model('Example', exampleSchema);
 const Stats = mongoose.model('Stats', statsSchema);
+const Visitor = mongoose.model('Visitor', visitorSchema);
 
 const wrapAsync =
   (fn) =>
@@ -332,13 +356,84 @@ app.get(
   })
 );
 
+// Helper function to extract device info from user agent
+const parseUserAgent = (userAgent) => {
+  if (!userAgent) return { device: 'Unknown', browser: 'Unknown', os: 'Unknown' };
+  
+  const ua = userAgent.toLowerCase();
+  let device = 'Desktop';
+  let browser = 'Unknown';
+  let os = 'Unknown';
+
+  // Device detection
+  if (/mobile|android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua)) {
+    device = 'Mobile';
+  } else if (/tablet|ipad|playbook|silk/i.test(ua)) {
+    device = 'Tablet';
+  }
+
+  // Browser detection
+  if (ua.includes('chrome') && !ua.includes('edg')) browser = 'Chrome';
+  else if (ua.includes('firefox')) browser = 'Firefox';
+  else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
+  else if (ua.includes('edg')) browser = 'Edge';
+  else if (ua.includes('opera') || ua.includes('opr')) browser = 'Opera';
+
+  // OS detection
+  if (ua.includes('windows')) os = 'Windows';
+  else if (ua.includes('mac')) os = 'macOS';
+  else if (ua.includes('linux')) os = 'Linux';
+  else if (ua.includes('android')) os = 'Android';
+  else if (ua.includes('ios') || ua.includes('iphone') || ua.includes('ipad')) os = 'iOS';
+
+  return { device, browser, os };
+};
+
+// Track page view
 app.post(
   '/api/analytics/pageview',
-  wrapAsync(async (_req, res) => {
-    res.json({ message: 'Pageview tracked' });
+  express.raw({ type: '*/*' }),
+  wrapAsync(async (req, res) => {
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'] || '';
+    const referer = req.headers.referer || '';
+    
+    // Handle both JSON and Blob (from sendBeacon) requests
+    let body;
+    try {
+      if (Buffer.isBuffer(req.body)) {
+        body = JSON.parse(req.body.toString());
+      } else if (typeof req.body === 'string') {
+        body = JSON.parse(req.body);
+      } else {
+        body = req.body;
+      }
+    } catch (e) {
+      body = {};
+    }
+    
+    const { path = '/', sessionId, visitDuration = 0 } = body || {};
+
+    const { device, browser, os } = parseUserAgent(userAgent);
+
+    const visitor = await Visitor.create({
+      ip: ip.split(',')[0].trim(), // Handle multiple IPs from proxies
+      userAgent,
+      referer,
+      path,
+      device,
+      browser,
+      os,
+      sessionId: sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      visitDuration,
+      timestamp: new Date(),
+    });
+
+    res.json({ message: 'Pageview tracked', id: visitor._id });
   })
 );
 
+// Get analytics summary
 app.get(
   '/api/analytics/summary',
   requireAdmin,
@@ -355,6 +450,161 @@ app.get(
       downloads: stats?.totalDownloads || 0,
       stars: stats?.githubStars || 0,
       users: stats?.activeUsers || 0,
+    });
+  })
+);
+
+// Get visitor analytics
+app.get(
+  '/api/analytics/visitors',
+  requireAdmin,
+  wrapAsync(async (req, res) => {
+    const { startDate, endDate, limit = 100 } = req.query;
+    const query = {};
+
+    if (startDate || endDate) {
+      query.timestamp = {};
+      if (startDate) query.timestamp.$gte = new Date(startDate);
+      if (endDate) query.timestamp.$lte = new Date(endDate);
+    }
+
+    const visitors = await Visitor.find(query)
+      .sort({ timestamp: -1 })
+      .limit(parseInt(limit))
+      .lean();
+
+    res.json(visitors);
+  })
+);
+
+// Get visitor statistics
+app.get(
+  '/api/analytics/visitor-stats',
+  requireAdmin,
+  wrapAsync(async (req, res) => {
+    const { days = 30 } = req.query;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - parseInt(days));
+
+    const [
+      totalVisits,
+      uniqueVisitors,
+      visitsByDay,
+      visitsByPath,
+      visitsByDevice,
+      visitsByBrowser,
+      visitsByOS,
+      averageVisitDuration,
+    ] = await Promise.all([
+      Visitor.countDocuments({ timestamp: { $gte: startDate } }),
+      Visitor.distinct('sessionId', { timestamp: { $gte: startDate } }),
+      Visitor.aggregate([
+        {
+          $match: { timestamp: { $gte: startDate } },
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp' } },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]),
+      Visitor.aggregate([
+        {
+          $match: { timestamp: { $gte: startDate } },
+        },
+        {
+          $group: {
+            _id: '$path',
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+        { $limit: 10 },
+      ]),
+      Visitor.aggregate([
+        {
+          $match: { timestamp: { $gte: startDate } },
+        },
+        {
+          $group: {
+            _id: '$device',
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+      ]),
+      Visitor.aggregate([
+        {
+          $match: { timestamp: { $gte: startDate } },
+        },
+        {
+          $group: {
+            _id: '$browser',
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+      ]),
+      Visitor.aggregate([
+        {
+          $match: { timestamp: { $gte: startDate } },
+        },
+        {
+          $group: {
+            _id: '$os',
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+      ]),
+      Visitor.aggregate([
+        {
+          $match: { timestamp: { $gte: startDate } },
+        },
+        {
+          $group: {
+            _id: null,
+            avgDuration: { $avg: '$visitDuration' },
+          },
+        },
+      ]),
+    ]);
+
+    res.json({
+      totalVisits,
+      uniqueVisitors: uniqueVisitors.length,
+      visitsByDay: visitsByDay.map((v) => ({ date: v._id, count: v.count })),
+      visitsByPath: visitsByPath.map((v) => ({ path: v._id, count: v.count })),
+      visitsByDevice: visitsByDevice.map((v) => ({ device: v._id, count: v.count })),
+      visitsByBrowser: visitsByBrowser.map((v) => ({ browser: v._id, count: v.count })),
+      visitsByOS: visitsByOS.map((v) => ({ os: v._id, count: v.count })),
+      averageVisitDuration: averageVisitDuration[0]?.avgDuration || 0,
+      period: { days: parseInt(days), startDate, endDate: new Date() },
+    });
+  })
+);
+
+// Delete visitor data
+app.delete(
+  '/api/analytics/visitors',
+  requireAdmin,
+  wrapAsync(async (req, res) => {
+    const { olderThanDays } = req.query;
+
+    let query = {};
+    if (olderThanDays) {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - parseInt(olderThanDays));
+      query.timestamp = { $lt: cutoffDate };
+    }
+
+    const result = await Visitor.deleteMany(query);
+
+    res.json({
+      message: `Deleted ${result.deletedCount} visitor records`,
+      deletedCount: result.deletedCount,
     });
   })
 );
