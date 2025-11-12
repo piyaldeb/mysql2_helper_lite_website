@@ -648,6 +648,7 @@ function AdminDashboard({ onBack, adminSecret }) {
               <thead>
                 <tr>
                   <th>Time</th>
+                  <th>Country</th>
                   <th>IP</th>
                   <th>Device</th>
                   <th>Browser</th>
@@ -661,6 +662,23 @@ function AdminDashboard({ onBack, adminSecret }) {
                   visitors.map((visitor) => (
                     <tr key={visitor._id}>
                       <td>{formatDate(visitor.timestamp)}</td>
+                      <td>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          {visitor.country && visitor.country !== 'Unknown' ? (
+                            <>
+                              <img
+                                src={`https://flagcdn.com/24x18/${visitor.country.toLowerCase()}.png`}
+                                alt={visitor.country}
+                                style={{ width: '24px', height: '18px', borderRadius: '2px' }}
+                                onError={(e) => { e.target.style.display = 'none'; }}
+                              />
+                              {visitor.country}
+                            </>
+                          ) : (
+                            <span style={{ color: '#94a3b8' }}>Unknown</span>
+                          )}
+                        </span>
+                      </td>
                       <td>{visitor.ip}</td>
                       <td>{visitor.device || 'Unknown'}</td>
                       <td>{visitor.browser || 'Unknown'}</td>
@@ -671,7 +689,7 @@ function AdminDashboard({ onBack, adminSecret }) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" style={{ textAlign: 'center', color: '#64748b' }}>
+                    <td colSpan="8" style={{ textAlign: 'center', color: '#64748b' }}>
                       No visitors yet
                     </td>
                   </tr>

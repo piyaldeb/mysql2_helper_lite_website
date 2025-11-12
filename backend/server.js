@@ -3,6 +3,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const geoip = require('geoip-lite');
 
 dotenv.config();
 
@@ -416,11 +417,17 @@ app.post(
 
     const { device, browser, os } = parseUserAgent(userAgent);
 
+    // Get country from IP
+    const cleanIp = ip.split(',')[0].trim(); // Handle multiple IPs from proxies
+    const geo = geoip.lookup(cleanIp);
+    const country = geo ? geo.country : 'Unknown';
+
     const visitor = await Visitor.create({
-      ip: ip.split(',')[0].trim(), // Handle multiple IPs from proxies
+      ip: cleanIp,
       userAgent,
       referer,
       path,
+      country,
       device,
       browser,
       os,
