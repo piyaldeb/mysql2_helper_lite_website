@@ -75,9 +75,29 @@ const styles = `
   .mh-root {
     font-family: 'Inter', 'Segoe UI', sans-serif;
     color: #0f172a;
-    background: linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%);
+    background:
+      radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 60%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
+      linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%);
     line-height: 1.6;
     animation: fadeInUp 0.6s ease-out;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .mh-root::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.03) 0%, transparent 40%),
+      radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   .mh-container {
@@ -205,31 +225,64 @@ const styles = `
     border-radius: 9999px;
     padding: 0.75rem 1.3rem;
     font-weight: 600;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
   }
 
   .mh-btn-primary {
-    background: #f8fafc;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: #0f172a;
-    box-shadow: 0 18px 35px rgba(15, 23, 42, 0.25);
+    box-shadow:
+      0 8px 24px rgba(255, 255, 255, 0.3),
+      0 4px 12px rgba(15, 23, 42, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+  }
+
+  .mh-btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
   .mh-btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 22px 45px rgba(15, 23, 42, 0.28);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+      0 16px 40px rgba(255, 255, 255, 0.4),
+      0 8px 20px rgba(99, 102, 241, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+
+  .mh-btn-primary:hover::before {
+    opacity: 1;
   }
 
   .mh-btn-secondary {
-    border: 1px solid rgba(248, 250, 252, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: #f8fafc;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
   .mh-btn-secondary:hover {
-    background: rgba(248, 250, 252, 0.15);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
 
   .mh-content {
     padding: 4.5rem 0;
+    position: relative;
+    z-index: 1;
   }
 
   .mh-section {
@@ -277,12 +330,16 @@ const styles = `
   }
 
   .mh-card {
-    background: #ffffff;
-    border-radius: 1.25rem;
-    border: 1px solid rgba(15, 23, 42, 0.08);
-    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+      0 8px 32px rgba(15, 23, 42, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
     padding: 2rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
   }
@@ -294,19 +351,48 @@ const styles = `
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.08) 0%,
+      rgba(139, 92, 246, 0.08) 50%,
+      rgba(236, 72, 153, 0.06) 100%
+    );
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
+  }
+
+  .mh-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.3) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
   .mh-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
-    border-color: rgba(99, 102, 241, 0.2);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+      0 24px 60px rgba(99, 102, 241, 0.15),
+      0 12px 24px rgba(99, 102, 241, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+    border-color: rgba(99, 102, 241, 0.3);
+    background: rgba(255, 255, 255, 0.85);
   }
 
   .mh-card:hover::before {
     opacity: 1;
+  }
+
+  .mh-card:hover::after {
+    opacity: 0.5;
   }
 
   .mh-card h3 {
@@ -435,11 +521,30 @@ const styles = `
   }
 
   .mh-stats {
-    background: linear-gradient(145deg, rgba(59, 130, 246, 0.08), rgba(6, 182, 212, 0.08));
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow:
+      0 8px 32px rgba(59, 130, 246, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
     border-radius: 1.5rem;
     padding: 2rem;
     display: grid;
     gap: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mh-stats::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      145deg,
+      rgba(99, 102, 241, 0.05) 0%,
+      rgba(6, 182, 212, 0.05) 100%
+    );
   }
 
   @media (min-width: 768px) {
@@ -449,13 +554,25 @@ const styles = `
   }
 
   .mh-stat-card {
-    background: rgba(248, 250, 252, 0.75);
-    border-radius: 1.05rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 1.25rem;
     padding: 1.5rem;
     display: flex;
     align-items: center;
     gap: 1rem;
-    border: 1px solid rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+
+  .mh-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+    background: rgba(255, 255, 255, 0.9);
   }
 
   .mh-stat-icon {
@@ -528,11 +645,29 @@ const styles = `
   }
 
   .version-card {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-    border: 2px solid var(--primary);
-    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    box-shadow:
+      0 8px 32px rgba(99, 102, 241, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border-radius: 1.5rem;
     padding: 2.5rem;
     margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .version-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.05) 0%,
+      rgba(139, 92, 246, 0.05) 100%
+    );
   }
 
   .version-header {
@@ -991,7 +1126,7 @@ export default function Mysql2HelperWebsite() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('Core');
   const [currentView, setCurrentView] = useState('home'); // 'home' or 'docs'
 
   useEffect(() => {
