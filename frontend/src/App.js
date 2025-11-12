@@ -1645,8 +1645,13 @@ export default function Mysql2HelperWebsite() {
     // Check if admin secret is set, if not prompt for it
     if (!adminSecret) {
       const secret = prompt('Enter admin password:');
-      if (secret === '2326') {
-        setAdminSecret('2326');
+      // Password is stored in environment variable for security
+      const adminPassword = process.env.REACT_APP_ADMIN_PASSWORD || 
+                           (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ADMIN_PASSWORD) ||
+                           '';
+      
+      if (secret === adminPassword && adminPassword) {
+        setAdminSecret(adminPassword);
       } else if (secret) {
         alert('Invalid password');
         window.location.href = '/';
