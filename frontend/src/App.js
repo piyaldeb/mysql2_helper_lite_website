@@ -988,11 +988,15 @@ const styles = `
   .version-badge {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
+    -webkit-text-fill-color: white;
+    background-clip: border-box;
+    -webkit-background-clip: border-box;
     padding: 0.5rem 1.25rem;
     border-radius: 9999px;
     font-weight: 700;
     font-size: 1.25rem;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    display: inline-block;
   }
 
   .version-features {
