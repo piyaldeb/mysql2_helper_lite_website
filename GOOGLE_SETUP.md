@@ -164,7 +164,7 @@ Consider adding a cookie consent banner:
 
 **Admin Email**: piyaldeb87@gmail.com
 **Current URL**: https://piyaldeb.github.io/mysql2_helper_lite_website
-**Analytics ID**: G-8HCZ84K6FK (✅ Configured)
+**Analytics ID**: G-WLFNFQD0ER (✅ Configured)
 **Analytics File**: `frontend/public/index.html` (lines 30-38)
 **AdSense File**: `frontend/public/index.html` (line 41)
 **AdSense Status**: ⚠️ Requires custom domain (not supported on .github.io)
@@ -236,7 +236,7 @@ If you don't want to purchase a domain:
 
 ## Next Steps After Setup
 
-1. ✅ Google Analytics is configured (G-8HCZ84K6FK)
+1. ✅ Google Analytics is configured (G-WLFNFQD0ER)
 2. ⏳ (Optional) Purchase custom domain for AdSense
 3. ⏳ (Optional) Configure DNS and GitHub Pages custom domain
 4. ⏳ (Optional) Apply for AdSense after domain is live
