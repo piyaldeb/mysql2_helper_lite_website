@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ExternalLink, BarChart3, Home, TrendingUp, DollarSign } from 'lucide-react';
+import { ExternalLink, BarChart3, Home, DollarSign } from 'lucide-react';
 
 const adminStyles = `
   .admin-redirect {
@@ -150,14 +150,6 @@ export default function AdminDashboard({ onBack }) {
       });
     }
   }, []);
-
-  const openGoogleAnalytics = () => {
-    window.open('https://analytics.google.com/', '_blank');
-  };
-
-  const openGoogleAdSense = () => {
-    window.open('https://www.google.com/adsense/', '_blank');
-  };
 
   return (
     <div className="admin-redirect">
