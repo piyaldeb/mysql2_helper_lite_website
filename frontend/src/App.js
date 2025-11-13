@@ -15,7 +15,7 @@ const API_URL =
   'http://localhost:3001/api';
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Poppins:wght@400;500;600;700;800;900&family=Lexend:wght@300;400;500;600;700&display=swap');
 
   :root {
     color-scheme: light;
@@ -34,6 +34,12 @@ const styles = `
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', 'Lexend', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   @keyframes fadeInUp {
@@ -225,14 +231,16 @@ const styles = `
   }
 
   .mh-root {
-    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-family: 'Lexend', 'Segoe UI', sans-serif;
+    font-weight: 400;
     color: #0f172a;
     background:
       radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
       radial-gradient(circle at 80% 60%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
       radial-gradient(circle at 40% 80%, rgba(147, 197, 253, 0.05) 0%, transparent 50%),
       linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f0f9ff 100%);
-    line-height: 1.6;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
     animation: fadeInUp 0.6s ease-out;
     position: relative;
     overflow-x: hidden;
@@ -325,11 +333,13 @@ const styles = `
   }
 
   .mh-hero h1 {
+    font-family: 'Poppins', 'Lexend', sans-serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
     line-height: 1.1;
     margin-bottom: 1.25rem;
-    font-weight: 900;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     animation: fadeInUp 0.8s ease-out 0.2s both;
   }
 
@@ -479,8 +489,11 @@ const styles = `
   }
 
   .mh-section-title h2 {
+    font-family: 'Poppins', 'Lexend', sans-serif;
     font-size: clamp(2rem, 4vw, 2.8rem);
     margin-bottom: 0.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: #0f172a;
   }
 
@@ -597,8 +610,11 @@ const styles = `
   }
 
   .mh-card h3 {
+    font-family: 'Poppins', 'Lexend', sans-serif;
     margin: 0;
     font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: #0f172a;
   }
 
