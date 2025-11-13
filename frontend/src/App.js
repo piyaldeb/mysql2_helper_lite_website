@@ -1284,7 +1284,8 @@ const styles = `
   .creator-link-btn {
     padding: 0.6rem 1.25rem;
     border-radius: 9999px;
-    background: var(--primary);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
     text-decoration: none;
     font-weight: 600;
@@ -1295,7 +1296,8 @@ const styles = `
   }
 
   .creator-link-btn:hover {
-    background: var(--primary-dark);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
     box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
   }
