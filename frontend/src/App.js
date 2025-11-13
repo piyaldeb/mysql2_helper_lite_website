@@ -287,7 +287,7 @@ const styles = `
     padding: 0.4rem 0.9rem;
     font-weight: 600;
     font-size: 0.9rem;
-    color: #e2e8f0;
+    color: #1e3a8a;
   }
 
   .mh-hero {
@@ -731,6 +731,7 @@ const styles = `
     border-radius: 9999px;
     border: 1px solid rgba(15, 23, 42, 0.1);
     background: #ffffff;
+    color: #0f172a;
     padding: 0.55rem 1.3rem;
     font-size: 0.92rem;
     font-weight: 600;
