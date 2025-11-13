@@ -339,13 +339,15 @@ const styles = `
     margin-bottom: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    color: #0f172a;
+    text-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
     animation: fadeInUp 0.8s ease-out 0.2s both;
   }
 
   .mh-hero p {
     max-width: 640px;
-    color: rgba(226, 232, 240, 0.85);
+    color: #475569;
+    font-size: 1.1rem;
     margin-bottom: 2rem;
   }
 
@@ -365,15 +367,20 @@ const styles = `
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
     border-radius: 0.9rem;
     padding: 0.9rem 1.2rem;
     font-size: 0.95rem;
+    color: #1e3a8a;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
   }
 
   .mh-highlight svg {
     flex-shrink: 0;
-    color: #38bdf8;
+    color: #3b82f6;
   }
 
   .mh-cta-group {
