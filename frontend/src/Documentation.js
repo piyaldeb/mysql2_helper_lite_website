@@ -326,7 +326,7 @@ const styles = `
   .function-title {
     margin: 0;
     font-size: 1.5rem;
-    color: #0f172a;
+    color: #F4C430;
     font-weight: 700;
   }
 
@@ -337,7 +337,7 @@ const styles = `
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #2563eb;
+    color: #F4C430;
   }
 
   .function-description {

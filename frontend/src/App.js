@@ -40,6 +40,7 @@ const styles = `
     font-family: 'Poppins', 'Lexend', sans-serif;
     font-weight: 700;
     letter-spacing: -0.02em;
+    color: #F4C430;
   }
 
   @keyframes fadeInUp {
@@ -340,8 +341,8 @@ const styles = `
     margin-bottom: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: #0f172a;
-    text-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    color: #F4C430;
+    text-shadow: 0 2px 8px rgba(244, 196, 48, 0.3);
     animation: fadeInUp 0.8s ease-out 0.2s both;
   }
 
@@ -487,7 +488,7 @@ const styles = `
     letter-spacing: 0.18rem;
     font-weight: 700;
     font-size: 0.75rem;
-    color: #2563eb;
+    color: #F4C430;
     margin-bottom: 0.75rem;
   }
 
@@ -502,7 +503,7 @@ const styles = `
     margin-bottom: 0.75rem;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: #0f172a;
+    color: #F4C430;
   }
 
   .mh-section-title p {
@@ -623,7 +624,7 @@ const styles = `
     font-size: 1.25rem;
     font-weight: 600;
     letter-spacing: -0.01em;
-    color: #0f172a;
+    color: #F4C430;
   }
 
   .mh-card pre {
@@ -717,7 +718,7 @@ const styles = `
     font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.08rem;
-    color: #1d4ed8;
+    color: #F4C430;
   }
 
   .mh-tabs {
@@ -1163,7 +1164,7 @@ const styles = `
   .modal-header h3 {
     margin: 0;
     font-size: 1.75rem;
-    color: #0f172a;
+    color: #F4C430;
   }
 
   .modal-close {
@@ -1219,7 +1220,7 @@ const styles = `
 
   .modal-function-name {
     font-weight: 700;
-    color: var(--primary);
+    color: #F4C430;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.95rem;
   }

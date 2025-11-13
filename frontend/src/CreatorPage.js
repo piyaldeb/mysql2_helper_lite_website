@@ -329,7 +329,7 @@ const styles = `
     gap: 0.75rem;
     font-size: 2rem;
     margin-bottom: 1.5rem;
-    color: #0f172a;
+    color: #F4C430;
   }
 
   .creator-card-white {
@@ -390,7 +390,7 @@ const styles = `
   .experience-header h3 {
     margin: 0;
     font-size: 1.5rem;
-    color: #0f172a;
+    color: #F4C430;
   }
 
   .experience-date {
@@ -422,7 +422,7 @@ const styles = `
 
   .education-degree {
     font-weight: 600;
-    color: #6366f1;
+    color: #F4C430;
     margin: 0.5rem 0;
   }
 
