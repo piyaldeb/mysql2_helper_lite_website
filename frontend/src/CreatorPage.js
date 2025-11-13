@@ -214,6 +214,18 @@ const CreatorPage = ({ onBack }) => {
 };
 
 const styles = `
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
   .mh-root {
     font-family: 'Inter', 'Segoe UI', sans-serif;
     background: #f8fafc;
@@ -329,7 +341,12 @@ const styles = `
     gap: 0.75rem;
     font-size: 2rem;
     margin-bottom: 1.5rem;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
   }
 
   .creator-card-white {
@@ -390,7 +407,12 @@ const styles = `
   .experience-header h3 {
     margin: 0;
     font-size: 1.5rem;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
   }
 
   .experience-date {
@@ -422,7 +444,12 @@ const styles = `
 
   .education-degree {
     font-weight: 600;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
     margin: 0.5rem 0;
   }
 

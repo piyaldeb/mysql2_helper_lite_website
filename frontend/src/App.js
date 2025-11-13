@@ -36,11 +36,28 @@ const styles = `
     box-sizing: border-box;
   }
 
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', 'Lexend', sans-serif;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
   }
 
   @keyframes fadeInUp {
@@ -341,9 +358,13 @@ const styles = `
     margin-bottom: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: #F4C430;
-    text-shadow: 0 2px 8px rgba(244, 196, 48, 0.3);
-    animation: fadeInUp 0.8s ease-out 0.2s both;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeInUp 0.8s ease-out 0.2s both, gradientShift 5s ease infinite;
+    filter: drop-shadow(0 2px 8px rgba(30, 58, 138, 0.2));
   }
 
   .mh-hero p {
@@ -488,7 +509,12 @@ const styles = `
     letter-spacing: 0.18rem;
     font-weight: 700;
     font-size: 0.75rem;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
     margin-bottom: 0.75rem;
   }
 
@@ -503,7 +529,12 @@ const styles = `
     margin-bottom: 0.75rem;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
   }
 
   .mh-section-title p {
@@ -624,7 +655,12 @@ const styles = `
     font-size: 1.25rem;
     font-weight: 600;
     letter-spacing: -0.01em;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
   }
 
   .mh-card pre {
@@ -718,7 +754,12 @@ const styles = `
     font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.08rem;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
   }
 
   .mh-tabs {
@@ -1164,7 +1205,12 @@ const styles = `
   .modal-header h3 {
     margin: 0;
     font-size: 1.75rem;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
   }
 
   .modal-close {
@@ -1220,7 +1266,12 @@ const styles = `
 
   .modal-function-name {
     font-weight: 700;
-    color: #F4C430;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 25%, #3b82f6 50%, #06b6d4 75%, #1e3a8a 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 5s ease infinite;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.95rem;
   }
