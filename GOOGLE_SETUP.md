@@ -30,11 +30,31 @@ This guide will help you set up Google Analytics and Google AdSense for your MyS
 
 ## Step 2: Set Up Google AdSense
 
-### Create AdSense Account
+### ⚠️ Important: Custom Domain Required for AdSense
+
+**Google AdSense does NOT support GitHub Pages subdomains (.github.io)**
+
+You have two options:
+
+#### Option 1: Use a Custom Domain (Recommended)
+1. Purchase a domain (e.g., `mysql2helper.com` from Namecheap, GoDaddy, etc.)
+2. Configure custom domain for GitHub Pages:
+   - In your repo: Settings → Pages → Custom domain
+   - Add your domain (e.g., `mysql2helper.com`)
+   - Follow GitHub's DNS setup instructions
+3. Wait for DNS to propagate (24-48 hours)
+4. Then apply for AdSense with your custom domain
+
+#### Option 2: Deploy to a Custom Domain Platform
+- Deploy to Vercel/Netlify with a custom domain
+- Use Cloudflare Pages with custom domain
+- These platforms support custom domains easily
+
+### Create AdSense Account (After Custom Domain Setup)
 1. Go to [Google AdSense](https://www.google.com/adsense/)
 2. Sign in with: **piyaldeb87@gmail.com**
 3. Click **Get Started**
-4. Enter your website URL: `https://piyaldeb.github.io/mysql2_helper_lite_website`
+4. Enter your custom domain: `https://yourdomain.com`
 5. Complete the application process
 
 ### Get Your Publisher ID
@@ -143,18 +163,85 @@ Consider adding a cookie consent banner:
 ## Quick Reference
 
 **Admin Email**: piyaldeb87@gmail.com
-**Website URL**: https://piyaldeb.github.io/mysql2_helper_lite_website
+**Current URL**: https://piyaldeb.github.io/mysql2_helper_lite_website
+**Analytics ID**: G-8HCZ84K6FK (✅ Configured)
 **Analytics File**: `frontend/public/index.html` (lines 30-38)
-**AdSense File**: `frontend/public/index.html` (lines 40-42)
+**AdSense File**: `frontend/public/index.html` (line 41)
+**AdSense Status**: ⚠️ Requires custom domain (not supported on .github.io)
+
+## Setting Up a Custom Domain (Required for AdSense)
+
+### Why You Need a Custom Domain
+- GitHub Pages subdomains (.github.io) are not eligible for AdSense
+- A custom domain (like mysql2helper.com) is required
+- Custom domains are inexpensive ($10-15/year)
+
+### Recommended Domain Registrars
+- **Namecheap** - Affordable, easy to use
+- **Google Domains** - Integrated with Google services
+- **Cloudflare** - Free privacy protection
+- **Porkbun** - Competitive pricing
+
+### Setting Up Custom Domain on GitHub Pages
+
+1. **Purchase Domain**:
+   - Choose a registrar
+   - Search for available domain (e.g., `mysql2helper.com`)
+   - Purchase for 1+ years
+
+2. **Configure DNS Records**:
+   Add these records at your domain registrar:
+   ```
+   Type: A
+   Name: @
+   Value: 185.199.108.153
+
+   Type: A
+   Name: @
+   Value: 185.199.109.153
+
+   Type: A
+   Name: @
+   Value: 185.199.110.153
+
+   Type: A
+   Name: @
+   Value: 185.199.111.153
+
+   Type: CNAME
+   Name: www
+   Value: piyaldeb.github.io
+   ```
+
+3. **Configure in GitHub**:
+   - Go to your repo: https://github.com/piyaldeb/mysql2_helper_lite_website
+   - Settings → Pages → Custom domain
+   - Enter your domain (e.g., `mysql2helper.com`)
+   - Click Save
+   - Enable "Enforce HTTPS" after DNS propagates
+
+4. **Wait for DNS**:
+   - DNS propagation takes 24-48 hours
+   - Check status: https://dnschecker.org/
+
+5. **Apply for AdSense**:
+   - After domain is working, apply at https://www.google.com/adsense/
+   - Use your custom domain URL
+
+### Alternative: Keep Analytics Only
+If you don't want to purchase a domain:
+- Google Analytics works perfectly on .github.io (already configured!)
+- You get comprehensive visitor tracking
+- Skip AdSense for now, add it later when ready
 
 ## Next Steps After Setup
 
-1. Replace placeholder IDs in `index.html`
-2. Deploy changes to GitHub Pages
-3. Submit site for AdSense review
-4. Set up Google Analytics goals
-5. Add ad units to your website
-6. Monitor performance in both dashboards
+1. ✅ Google Analytics is configured (G-8HCZ84K6FK)
+2. ⏳ (Optional) Purchase custom domain for AdSense
+3. ⏳ (Optional) Configure DNS and GitHub Pages custom domain
+4. ⏳ (Optional) Apply for AdSense after domain is live
+5. Set up Google Analytics goals and events
+6. Monitor your analytics dashboard regularly
 
 ---
 
