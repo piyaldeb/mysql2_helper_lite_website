@@ -151,9 +151,10 @@ const styles = `
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    min-height: 100%;
     pointer-events: none;
-    z-index: 1;
+    z-index: 0;
     overflow: hidden;
     will-change: transform;
   }
@@ -163,19 +164,19 @@ const styles = `
     bottom: -100px;
     border-radius: 50%;
     background: linear-gradient(135deg,
-      rgba(59, 130, 246, 0.4) 0%,
-      rgba(6, 182, 212, 0.35) 30%,
-      rgba(147, 197, 253, 0.3) 60%,
-      rgba(255, 255, 255, 0.25) 100%);
+      rgba(251, 191, 36, 0.35) 0%,
+      rgba(245, 158, 11, 0.3) 30%,
+      rgba(234, 179, 8, 0.25) 60%,
+      rgba(255, 255, 255, 0.2) 100%);
     backdrop-filter: blur(60px) saturate(200%);
     -webkit-backdrop-filter: blur(60px) saturate(200%);
-    border: 2px solid rgba(255, 255, 255, 0.6);
+    border: 2px solid rgba(251, 191, 36, 0.5);
     box-shadow:
-      0 12px 48px rgba(59, 130, 246, 0.3),
-      0 6px 24px rgba(6, 182, 212, 0.25),
-      inset 0 0 40px rgba(255, 255, 255, 0.4),
-      inset 0 -10px 40px rgba(59, 130, 246, 0.15),
-      0 0 80px rgba(147, 197, 253, 0.2);
+      0 12px 48px rgba(251, 191, 36, 0.25),
+      0 6px 24px rgba(245, 158, 11, 0.2),
+      inset 0 0 40px rgba(255, 255, 255, 0.3),
+      inset 0 -10px 40px rgba(251, 191, 36, 0.1),
+      0 0 80px rgba(234, 179, 8, 0.15);
     will-change: transform, opacity;
     animation-timing-function: ease-in-out;
     transform: translateZ(0);
@@ -1284,8 +1285,8 @@ const styles = `
   .creator-link-btn {
     padding: 0.6rem 1.25rem;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--accent);
+    border: none;
     color: white;
     text-decoration: none;
     font-weight: 600;
@@ -1296,10 +1297,9 @@ const styles = `
   }
 
   .creator-link-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: #0891b2;
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 8px 16px rgba(6, 182, 212, 0.4);
   }
 
   @media (max-width: 768px) {
@@ -1759,7 +1759,7 @@ function CreatorGlimpse({ onViewFull }) {
               <a href="mailto:piyaldeb87@gmail.com" className="creator-link-btn">
                 <Mail size={18} /> Contact
               </a>
-              <button onClick={onViewFull} className="creator-link-btn" style={{ background: 'var(--accent)', border: 'none', cursor: 'pointer' }}>
+              <button onClick={onViewFull} className="creator-link-btn" style={{ border: 'none', cursor: 'pointer' }}>
                 <User size={18} /> View Full Profile
               </button>
             </div>
