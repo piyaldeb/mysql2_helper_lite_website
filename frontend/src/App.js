@@ -19,10 +19,11 @@ const styles = `
 
   :root {
     color-scheme: light;
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --secondary: #8b5cf6;
-    --accent: #ec4899;
+    --primary: #ffffff;
+    --primary-dark: #f8fafc;
+    --secondary: #3b82f6;
+    --accent: #06b6d4;
+    --royal: #1e3a8a;
     --success: #10b981;
     --warning: #f59e0b;
     --code-bg: #1e1e2e;
@@ -57,34 +58,40 @@ const styles = `
 
   @keyframes bubbleFloat {
     0% {
-      transform: translateY(100vh) translateX(0) scale(0);
+      transform: translateY(100vh) translateX(0) scale(0) rotate(0deg);
       opacity: 0;
     }
     10% {
-      opacity: 0.6;
+      opacity: 0.9;
+    }
+    50% {
+      transform: translateY(50vh) translateX(calc(var(--bubble-x) * 0.5px)) scale(1) rotate(180deg);
     }
     90% {
-      opacity: 0.6;
+      opacity: 0.8;
     }
     100% {
-      transform: translateY(-100px) translateX(calc(var(--bubble-x) * 1px)) scale(1);
+      transform: translateY(-100px) translateX(calc(var(--bubble-x) * 1px)) scale(0.8) rotate(360deg);
       opacity: 0;
     }
   }
 
   @keyframes bubbleFloatSlow {
     0% {
-      transform: translateY(100vh) translateX(0) scale(0);
+      transform: translateY(100vh) translateX(0) scale(0) rotate(0deg);
       opacity: 0;
     }
     10% {
-      opacity: 0.4;
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateY(50vh) translateX(calc(var(--bubble-x) * 0.3px)) scale(1.1) rotate(90deg);
     }
     90% {
-      opacity: 0.4;
+      opacity: 0.6;
     }
     100% {
-      transform: translateY(-100px) translateX(calc(var(--bubble-x) * 1px)) scale(1);
+      transform: translateY(-100px) translateX(calc(var(--bubble-x) * 1px)) scale(1) rotate(180deg);
       opacity: 0;
     }
   }
@@ -121,15 +128,15 @@ const styles = `
   @keyframes glow {
     0%, 100% {
       box-shadow:
-        0 0 20px rgba(139, 92, 246, 0.3),
-        0 0 40px rgba(139, 92, 246, 0.2),
-        0 0 60px rgba(139, 92, 246, 0.1);
+        0 0 30px rgba(59, 130, 246, 0.4),
+        0 0 60px rgba(147, 197, 253, 0.3),
+        0 0 90px rgba(6, 182, 212, 0.2);
     }
     50% {
       box-shadow:
-        0 0 30px rgba(139, 92, 246, 0.4),
-        0 0 60px rgba(139, 92, 246, 0.3),
-        0 0 90px rgba(139, 92, 246, 0.2);
+        0 0 40px rgba(59, 130, 246, 0.5),
+        0 0 80px rgba(147, 197, 253, 0.4),
+        0 0 120px rgba(6, 182, 212, 0.3);
     }
   }
 
@@ -149,20 +156,22 @@ const styles = `
     position: absolute;
     bottom: -100px;
     border-radius: 50%;
-    background: linear-gradient(135deg, 
-      rgba(99, 102, 241, 0.2) 0%, 
-      rgba(139, 92, 246, 0.15) 50%,
-      rgba(168, 85, 247, 0.1) 100%);
-    backdrop-filter: blur(50px) saturate(180%);
-    -webkit-backdrop-filter: blur(50px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 
-      0 8px 32px rgba(99, 102, 241, 0.15),
-      0 4px 16px rgba(139, 92, 246, 0.1),
-      inset 0 0 30px rgba(255, 255, 255, 0.15),
-      inset 0 0 60px rgba(99, 102, 241, 0.05);
+    background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.4) 0%,
+      rgba(6, 182, 212, 0.35) 30%,
+      rgba(147, 197, 253, 0.3) 60%,
+      rgba(255, 255, 255, 0.25) 100%);
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+      0 12px 48px rgba(59, 130, 246, 0.3),
+      0 6px 24px rgba(6, 182, 212, 0.25),
+      inset 0 0 40px rgba(255, 255, 255, 0.4),
+      inset 0 -10px 40px rgba(59, 130, 246, 0.15),
+      0 0 80px rgba(147, 197, 253, 0.2);
     will-change: transform, opacity;
-    animation-timing-function: linear;
+    animation-timing-function: ease-in-out;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
   }
@@ -217,12 +226,12 @@ const styles = `
 
   .mh-root {
     font-family: 'Inter', 'Segoe UI', sans-serif;
-    color: #1e1b4b;
+    color: #0f172a;
     background:
-      radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
-      radial-gradient(circle at 80% 60%, rgba(168, 85, 247, 0.10) 0%, transparent 50%),
-      radial-gradient(circle at 40% 80%, rgba(217, 70, 239, 0.08) 0%, transparent 50%),
-      linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #fae8ff 100%);
+      radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 60%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(147, 197, 253, 0.05) 0%, transparent 50%),
+      linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f0f9ff 100%);
     line-height: 1.6;
     animation: fadeInUp 0.6s ease-out;
     position: relative;
@@ -238,9 +247,9 @@ const styles = `
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
-      radial-gradient(circle at 70% 70%, rgba(217, 70, 239, 0.04) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.03) 0%, transparent 60%);
+      radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 70% 70%, rgba(30, 58, 138, 0.03) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.02) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
@@ -277,9 +286,10 @@ const styles = `
     position: relative;
     overflow: hidden;
     padding: 5rem 0 6rem;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #ffffff 0%, #dbeafe 30%, #bfdbfe 60%, #93c5fd 100%);
+    color: #0f172a;
     z-index: 2;
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15);
   }
 
   .mh-hero::before {
@@ -290,9 +300,9 @@ const styles = `
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.15) 0%, transparent 50%),
-      radial-gradient(circle at 50% 20%, rgba(255,255,255,0.1) 0%, transparent 40%);
+      radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(147, 197, 253, 0.2) 0%, transparent 50%),
+      radial-gradient(circle at 50% 20%, rgba(6, 182, 212, 0.12) 0%, transparent 40%);
     pointer-events: none;
     animation: pulse 4s ease-in-out infinite;
   }
@@ -378,32 +388,41 @@ const styles = `
   }
 
   .mh-btn-primary {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: #0f172a;
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(255, 255, 255, 0.95) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    color: #1e3a8a;
     box-shadow:
-      0 8px 24px rgba(255, 255, 255, 0.3),
-      0 4px 12px rgba(15, 23, 42, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 1);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+      0 12px 32px rgba(59, 130, 246, 0.25),
+      0 6px 16px rgba(147, 197, 253, 0.2),
+      inset 0 2px 4px rgba(255, 255, 255, 1),
+      inset 0 -2px 4px rgba(59, 130, 246, 0.1),
+      0 0 60px rgba(147, 197, 253, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.9);
   }
 
   .mh-btn-primary::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+    border-radius: 9999px;
+    background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.15),
+      rgba(6, 182, 212, 0.15));
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
   .mh-btn-primary:hover {
-    transform: translateY(-2px) scale(1.05);
+    transform: translateY(-3px) scale(1.05);
     box-shadow:
-      0 16px 40px rgba(255, 255, 255, 0.4),
-      0 8px 20px rgba(99, 102, 241, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 1);
+      0 20px 50px rgba(59, 130, 246, 0.35),
+      0 10px 25px rgba(147, 197, 253, 0.3),
+      inset 0 2px 4px rgba(255, 255, 255, 1),
+      inset 0 -2px 4px rgba(59, 130, 246, 0.15),
+      0 0 80px rgba(147, 197, 253, 0.25);
   }
 
   .mh-btn-primary:hover::before {
@@ -411,19 +430,28 @@ const styles = `
   }
 
   .mh-btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #f8fafc;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.75) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    color: #1e3a8a;
+    box-shadow:
+      0 8px 24px rgba(59, 130, 246, 0.15),
+      inset 0 1px 2px rgba(255, 255, 255, 0.9);
   }
 
   .mh-btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.85) 100%);
+    border-color: rgba(59, 130, 246, 0.5);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    box-shadow:
+      0 12px 32px rgba(59, 130, 246, 0.25),
+      inset 0 1px 2px rgba(255, 255, 255, 1),
+      0 0 40px rgba(147, 197, 253, 0.2);
   }
 
   .mh-content {
@@ -477,15 +505,19 @@ const styles = `
   }
 
   .mh-card {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(30px) saturate(200%);
-    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.85) 100%);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
     border-radius: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.8);
     box-shadow:
-      0 8px 32px rgba(15, 23, 42, 0.1),
-      0 2px 8px rgba(99, 102, 241, 0.05),
-      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      0 12px 40px rgba(59, 130, 246, 0.15),
+      0 4px 12px rgba(147, 197, 253, 0.1),
+      inset 0 2px 4px rgba(255, 255, 255, 1),
+      inset 0 -2px 4px rgba(59, 130, 246, 0.05),
+      0 0 60px rgba(147, 197, 253, 0.1);
     padding: 2rem;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -502,9 +534,9 @@ const styles = `
     bottom: 0;
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.08) 0%,
-      rgba(139, 92, 246, 0.08) 50%,
-      rgba(236, 72, 153, 0.06) 100%
+      rgba(59, 130, 246, 0.08) 0%,
+      rgba(6, 182, 212, 0.08) 50%,
+      rgba(147, 197, 253, 0.06) 100%
     );
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -527,15 +559,18 @@ const styles = `
   }
 
   .mh-card:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-10px) scale(1.02);
     box-shadow:
-      0 24px 60px rgba(99, 102, 241, 0.2),
-      0 12px 24px rgba(99, 102, 241, 0.15),
-      0 0 0 1px rgba(99, 102, 241, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 1);
-    border-color: rgba(99, 102, 241, 0.4);
-    background: rgba(255, 255, 255, 0.9);
-    animation: glow 2s ease-in-out infinite;
+      0 28px 70px rgba(59, 130, 246, 0.3),
+      0 14px 30px rgba(147, 197, 253, 0.25),
+      0 0 0 2px rgba(59, 130, 246, 0.2),
+      inset 0 2px 4px rgba(255, 255, 255, 1),
+      inset 0 -2px 4px rgba(59, 130, 246, 0.1),
+      0 0 80px rgba(147, 197, 253, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(255, 255, 255, 0.92) 100%);
   }
 
   .mh-card:hover::before {
@@ -543,7 +578,7 @@ const styles = `
   }
 
   .mh-card:hover::after {
-    opacity: 0.5;
+    opacity: 0.6;
   }
 
   .ripple-effect {
@@ -551,9 +586,9 @@ const styles = `
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      rgba(139, 92, 246, 0.4) 0%,
-      rgba(168, 85, 247, 0.3) 30%,
-      rgba(217, 70, 239, 0.2) 60%,
+      rgba(59, 130, 246, 0.5) 0%,
+      rgba(6, 182, 212, 0.4) 30%,
+      rgba(147, 197, 253, 0.3) 60%,
       transparent 100%
     );
     pointer-events: none;
@@ -690,15 +725,19 @@ const styles = `
   }
 
   .mh-tab-active {
-    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
     color: #ffffff;
-    border-color: #8b5cf6;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    border-color: #3b82f6;
+    box-shadow:
+      0 4px 12px rgba(59, 130, 246, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.3);
   }
 
   .mh-tab-active:hover {
-    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
-    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    box-shadow:
+      0 6px 20px rgba(59, 130, 246, 0.5),
+      inset 0 1px 2px rgba(255, 255, 255, 0.4);
   }
 
   .mh-stats {
@@ -1626,7 +1665,7 @@ function VersionUpdate() {
   return (
     <div className="version-card">
       <div className="version-header">
-        <Gift size={32} color="#6366f1" />
+        <Gift size={32} color="#3b82f6" />
         <div>
           <h2 style={{ margin: 0, fontSize: '1.75rem' }}>
             <span className="version-badge">v6.0.0</span> Latest Release
@@ -2010,7 +2049,7 @@ function CategoryModal({ category, onClose }) {
           </h4>
           {info.functions.map((func, index) => (
             <div key={index} className="modal-function-item">
-              <CheckCircle size={18} color="#6366f1" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <CheckCircle size={18} color="#3b82f6" style={{ flexShrink: 0, marginTop: '2px' }} />
               <div>
                 <div className="modal-function-name">{func.name}</div>
                 <div className="modal-function-desc">{func.desc}</div>
@@ -2498,7 +2537,7 @@ export default function Mysql2HelperWebsite() {
                         transition: 'color 0.2s',
                         zIndex: 10
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.color = categoryFilter === category ? 'white' : '#6366f1'}
+                      onMouseOver={(e) => e.currentTarget.style.color = categoryFilter === category ? 'white' : '#3b82f6'}
                       onMouseOut={(e) => e.currentTarget.style.color = categoryFilter === category ? 'rgba(255, 255, 255, 0.8)' : 'rgba(100, 116, 139, 0.6)'}
                       title={`Learn more about ${category} functions`}
                     >
@@ -2587,22 +2626,6 @@ export default function Mysql2HelperWebsite() {
             <div className="mh-footer-links">
               <a href="https://github.com/piyaldeb">GitHub</a>
               <a href="mailto:piyaldeb87@gmail.com">Email</a>
-              <a
-                href="#admin"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.hash = 'admin';
-                  setCurrentView('admin');
-                }}
-                style={{
-                  color: '#6366f1',
-                  cursor: 'pointer',
-                  fontSize: '0.95rem',
-                  textDecoration: 'underline'
-                }}
-              >
-                Admin
-              </a>
             </div>
           </div>
         </div>
